@@ -23,5 +23,39 @@ if operation == "/":
 	result = divide(num1,num2)
 
 print(f"Result: {result}")	
+#############2nd task########################
+def analyse_list(num_list):
+    if not num_list:
+        return "list is empty"
+    total_sum = sum(num_list)
+    average = total_sum / len(num_list)
+    largest = max(num_list)
+    smallest = min(num_list)
+    
+    return {
+            "sum":total_sum,
+            "average":average,
+            "largest":largest,
+            "smallest":smallest
+            }
+ 
+
+sample_num = [15,2,8,48,10]
+result = analyse_list(sample_num)
+print(result)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
