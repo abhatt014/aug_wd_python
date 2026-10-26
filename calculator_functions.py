@@ -44,7 +44,13 @@ sample_num = [15,2,8,48,10]
 result = analyse_list(sample_num)
 print(result)
 
+#############3rd task############################
+def greet(name,time_of_day):
+    return f"Good{time_of_day}, {name}"
 
+print(greet("Alice","morning"))
+print(greet("John","evening"))
+print(greet("Bob","Afternoon"))
 
 
 
