@@ -51,17 +51,3 @@ def greet(name,time_of_day):
 print(greet("Alice","morning"))
 print(greet("John","evening"))
 print(greet("Bob","Afternoon"))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
