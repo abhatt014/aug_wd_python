@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crust & Co. — Wood-fired pizza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tomato: #C8281E;
+    --tomato-deep: #9E1C14;
+    --basil: #2E6B3A;
+    --crust: #E8A33D;
+    --char: #231A16;
+    --bg: #FFFFFF;
+    --surface: #FBF3EC;
+    --text: #231A16;
+    --muted: #6B5A51;
+    --line: #EADBD0;
+    --on-tomato: #FFFFFF;
+    --display: "Shrikhand", "Georgia", serif;
+    --body: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1A1311; --surface: #251C19; --text: #F6EDE6; --muted: #BCA99E; --line: #3A2E29;
+      --tomato: #E0412F; --basil: #5FA56E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1A1311; --surface: #251C19; --text: #F6EDE6; --muted: #BCA99E; --line: #3A2E29;
+    --tomato: #E0412F; --basil: #5FA56E;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 72px); }
+  body { margin: 0; font-family: var(--body); font-size: 1.0625rem; line-height: 1.55; background: var(--bg); color: var(--text); }
+  img, svg { max-width: 100%; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--crust); outline-offset: 3px; border-radius: 4px; }
+  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+  /* Header */
+  header.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--tomato); color: var(--on-tomato); }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 64px; }
+  .logo { font-family: var(--display); font-size: 1.6rem; text-decoration: none; }
+  nav.links { display: flex; gap: 1.5rem; font-weight: 600; }
+  nav.links a { text-decoration: none; opacity: .9; }
+  nav.links a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+  .cart-btn { display: inline-flex; align-items: center; gap: .5rem; background: var(--char); color: #fff; border: 0; border-radius: 999px; padding: .55rem 1rem; font: 600 .95rem var(--body); cursor: pointer; }
+  .cart-count { background: var(--crust); color: var(--char); border-radius: 999px; min-width: 1.5rem; padding: 0 .4rem; text-align: center; }
+  @media (max-width: 720px) { nav.links { display: none; } }
+
+  /* Hero */
+  .hero { background: var(--tomato); color: var(--on-tomato); overflow: hidden; }
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 2rem; padding-block: 3rem 4.5rem; }
+  .hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.8rem, 7vw, 5.5rem); line-height: .98; margin: 0 0 1.25rem; }
+  .hero p { font-size: 1.2rem; max-width: 34ch; margin: 0 0 2rem; }
+  .btn { display: inline-block; border: 0; border-radius: 999px; padding: .9rem 1.6rem; font: 700 1rem var(--body); cursor: pointer; text-decoration: none; }
+  .btn-light { background: #fff; color: var(--tomato-deep); }
+  .btn-ghost { background: transparent; color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.7); margin-left: .5rem; }
+  .pizza { width: 100%; max-width: 440px; justify-self: center; animation: spin 60s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .pizza { animation: none; } html { scroll-behavior: auto; } }
+  @media (max-width: 820px) {
+    .hero .wrap { grid-template-columns: 1fr; text-align: center; padding-block: 2.5rem 3rem; }
+    .hero p { margin-inline: auto; }
+    .pizza { max-width: 300px; grid-row: 1; }
+  }
+
+  /* Strip */
+  .strip { background: var(--char); color: #F6EDE6; }
+  .strip .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding-block: 1rem; font-weight: 600; }
+
+  /* Sections */
+  section.block { padding-block: 4.5rem; }
+  h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.1; margin: 0 0 .5rem; color: var(--tomato); }
+  .lead { color: var(--muted); max-width: 60ch; margin: 0 0 2rem; }
+
+  /* Menu */
+  .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
+  .chip { border: 2px solid var(--line); background: var(--bg); color: var(--text); border-radius: 999px; padding: .5rem 1.1rem; font: 600 .95rem var(--body); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0 2.5rem; }
+  .item { display: grid; grid-template-columns: 1fr auto; gap: .25rem 1rem; padding-block: 1.25rem; border-bottom: 1px dashed var(--line); }
+  .item h3 { margin: 0; font-size: 1.15rem; display: flex; align-items: center; gap: .5rem; }
+  .item p { margin: 0; color: var(--muted); font-size: .95rem; grid-column: 1; }
+  .price { font-weight: 700; font-size: 1.1rem; text-align: right; }
+  .add { grid-column: 2; grid-row: 2; align-self: end; border: 2px solid var(--tomato); color: var(--tomato); background: transparent; border-radius: 999px; padding: .3rem .9rem; font: 700 .9rem var(--body); cursor: pointer; }
+  .add:hover { background: var(--tomato); color: #fff; }
+  .add.added { background: var(--basil); border-color: var(--basil); color: #fff; }
+  .mark { width: 16px; height: 16px; border: 2px solid; display: inline-grid; place-items: center; flex: none; border-radius: 3px; }
+  .mark::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .mark.veg { color: #2E8B3A; }
+  .mark.nonveg { color: #B3261E; }
+  .tag { font-size: .75rem; font-weight: 700; background: var(--crust); color: var(--char); border-radius: 4px; padding: .05rem .4rem; }
+
+  /* Deals */
+  .deals { background: var(--surface); }
+  .deal-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+  .deal { background: var(--bg); border-left: 6px solid var(--crust); padding: 1.5rem; }
+  .deal:nth-child(2) { border-color: var(--basil); }
+  .deal:nth-child(3) { border-color: var(--tomato); }
+  .deal h3 { margin: 0 0 .25rem; font-size: 1.25rem; }
+  .deal .big { font-family: var(--display); font-size: 2rem; color: var(--tomato); }
+  .deal p { margin: .25rem 0 0; color: var(--muted); }
+
+  /* Story + Visit */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  @media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
+  .hours { width: 100%; border-collapse: collapse; }
+  .hours td { padding: .6rem 0; border-bottom: 1px solid var(--line); }
+  .hours td:last-child { text-align: right; font-weight: 600; }
+  .open-now { display: inline-block; margin-top: 1rem; font-weight: 700; }
+  .map { background: var(--surface); padding: 1.5rem; margin-top: 1.5rem; }
+  .map p { margin: .25rem 0; }
+
+  footer { background: var(--char); color: #BCA99E; padding-block: 2rem; font-size: .9rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+  footer .logo { color: #fff; font-size: 1.3rem; }
+
+  /* Cart drawer */
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 30; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(400px, 100%); background: var(--bg); z-index: 31; transform: translateX(100%); transition: transform .25s ease; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .open .scrim { opacity: 1; pointer-events: auto; }
+  .open .drawer { transform: none; }
+  .drawer-head { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--line); }
+  .drawer-head h2 { font-size: 1.8rem; margin: 0; }
+  .close { background: none; border: 0; font-size: 1.8rem; cursor: pointer; color: var(--text); line-height: 1; }
+  .lines { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+  .line { display: grid; grid-template-columns: 1fr auto; gap: .25rem; padding-block: .8rem; border-bottom: 1px dashed var(--line); }
+  .qty { display: inline-flex; align-items: center; gap: .6rem; }
+  .qty button { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg); color: var(--text); font-weight: 700; cursor: pointer; }
+  .empty { color: var(--muted); text-align: center; padding: 3rem 1rem; }
+  .drawer-foot { padding: 1.25rem 1.5rem; border-top: 1px solid var(--line); }
+  .total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+  .order { width: 100%; background: var(--basil); color: #fff; text-align: center; }
+  .order[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  .note { font-size: .85rem; color: var(--muted); margin: .75rem 0 0; text-align: center; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="#top">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="#menu">Menu</a>
+      <a href="#deals">Deals</a>
+      <a href="#visit">Visit us</a>
+      <a href="/contact-us">Contact-us</a>
+    </nav>
+    <button class="cart-btn" id="cartBtn" aria-label="Open your order">
+      Your order <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Hot from the oven in 90 seconds.</h1>
+        <p>Hand-stretched dough rested for 48 hours, fired at 450°C, delivered to your door or ready at the counter.</p>
+        <a class="btn btn-light" href="#menu">See the menu</a>
+        <a class="btn btn-ghost" href="#visit">Find us</a>
+      </div>
+      <svg class="pizza" viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="96" fill="#E8A33D"/>
+        <circle cx="100" cy="100" r="96" fill="none" stroke="#B9741F" stroke-width="3" stroke-dasharray="2 7"/>
+        <circle cx="100" cy="100" r="82" fill="#B8231A"/>
+        <path d="M100 30c20 4 44 10 58 30s8 46-4 64-38 36-60 36-44-12-56-32-12-46 2-66 40-36 60-32z" fill="#FFF3E0" opacity=".92"/>
+        <g fill="#9E1C14">
+          <circle cx="70" cy="68" r="11"/><circle cx="128" cy="62" r="10"/><circle cx="140" cy="112" r="11"/>
+          <circle cx="98" cy="102" r="10"/><circle cx="62" cy="120" r="10"/><circle cx="108" cy="146" r="11"/>
+        </g>
+        <g fill="#2E6B3A">
+          <ellipse cx="90" cy="70" rx="8" ry="4" transform="rotate(-30 90 70)"/>
+          <ellipse cx="120" cy="92" rx="8" ry="4" transform="rotate(40 120 92)"/>
+          <ellipse cx="80" cy="140" rx="8" ry="4" transform="rotate(10 80 140)"/>
+          <ellipse cx="146" cy="84" rx="7" ry="3.5" transform="rotate(-60 146 84)"/>
+        </g>
+        <g stroke="#7A4A14" stroke-width="1.5" opacity=".5">
+          <line x1="100" y1="18" x2="100" y2="182"/><line x1="18" y1="100" x2="182" y2="100"/>
+          <line x1="42" y1="42" x2="158" y2="158"/><line x1="158" y1="42" x2="42" y2="158"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="wrap">
+      <span>Free delivery within 5 km</span>
+      <span>Open daily, 11 am – 11 pm</span>
+      <span>Call 98765 43210</span>
+    </div>
+  </div>
+
+  <section class="block" id="menu">
+    <div class="wrap">
+      <h2>The menu</h2>
+      <p class="lead">Every pizza is 10 inches and made to order. Tap Add to build your order, then send it straight to us on WhatsApp.</p>
+      <div class="filters" role="group" aria-label="Filter menu">
+        <button class="chip" aria-pressed="true" data-filter="all">Everything</button>
+        <button class="chip" aria-pressed="false" data-filter="veg">Veg</button>
+        <button class="chip" aria-pressed="false" data-filter="nonveg">Non-veg</button>
+        <button class="chip" aria-pressed="false" data-filter="sides">Sides & drinks</button>
+      </div>
+      <div class="menu" id="menuList"></div>
+    </div>
+  </section>
+
+  <section class="block deals" id="deals">
+    <div class="wrap">
+      <h2>This week's deals</h2>
+      <p class="lead">Mention the deal when you order and we'll apply it at checkout.</p>
+      <div class="deal-row">
+        <div class="deal"><h3>Weekday lunch</h3><div class="big">₹249</div><p>Any veg pizza with a soft drink, Monday to Friday until 4 pm.</p></div>
+        <div class="deal"><h3>Two's company</h3><div class="big">20% off</div><p>On your second pizza, any day of the week.</p></div>
+        <div class="deal"><h3>Party box</h3><div class="big">₹1,499</div><p>Four pizzas, two garlic breads and a 1.25 L drink. Order a day ahead.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="visit">
+    <div class="wrap two">
+      <div>
+        <h2>Why it tastes like this</h2>
+        <p>We started with one wood-fired oven and a simple rule: slow dough, fresh toppings, fast bake. Our tomatoes are crushed by hand every morning, our mozzarella arrives fresh daily, and nothing sits under a heat lamp.</p>
+        <p>Come in and watch the oven, or let us bring it to you.</p>
+      </div>
+      <div>
+        <h2>Visit us</h2>
+        <table class="hours">
+          <tr><td>Monday – Thursday</td><td>11 am – 11 pm</td></tr>
+          <tr><td>Friday – Saturday</td><td>11 am – 12 am</td></tr>
+          <tr><td>Sunday</td><td>12 pm – 11 pm</td></tr>
+        </table>
+        <span class="open-now" id="openNow"></span>
+        <div class="map">
+          <p><strong>Crust & Co.</strong></p>
+          <p>Shop 12, Main Market Road<br>Your City – 110001</p>
+          <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span id="year"></span> Crust & Co. All prices include taxes. {{curr_date}}</span>
+  </div>
+</footer>
+
+<div id="cartRoot">
+  <div class="scrim" id="scrim"></div>
+  <aside class="drawer" id="drawer" aria-label="Your order" aria-hidden="true">
+    <div class="drawer-head">
+      <h2>Your order</h2>
+      <button class="close" id="closeCart" aria-label="Close order">×</button>
+    </div>
+    <div class="lines" id="lines"></div>
+    <div class="drawer-foot">
+      <div class="total"><span>Total</span><span id="total">₹0</span></div>
+      <a class="btn order" id="orderBtn" href="#" target="_blank" rel="noopener">Send order on WhatsApp</a>
+      <p class="note">We'll reply to confirm your address and delivery time.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+  // Edit this list to change your menu. type: veg | nonveg | sides
+  const MENU = [
+    { id: 1,  name: "Margherita",        desc: "San Marzano tomato, fresh mozzarella, basil", price: 299, type: "veg" },
+    { id: 2,  name: "Farmhouse",         desc: "Capsicum, onion, mushroom, sweet corn", price: 349, type: "veg" },
+    { id: 3,  name: "Paneer Tikka",      desc: "Tandoori paneer, onion, green chilli, mint drizzle", price: 399, type: "veg", tag: "Bestseller" },
+    { id: 4,  name: "Four Cheese",       desc: "Mozzarella, cheddar, parmesan, gorgonzola", price: 429, type: "veg" },
+    { id: 5,  name: "Pepperoni",         desc: "Chicken pepperoni, mozzarella, oregano", price: 449, type: "nonveg", tag: "Bestseller" },
+    { id: 6,  name: "BBQ Chicken",       desc: "Smoky BBQ sauce, grilled chicken, red onion", price: 469, type: "nonveg" },
+    { id: 7,  name: "Chicken Keema",     desc: "Spiced keema, jalapeño, coriander", price: 479, type: "nonveg", tag: "Spicy" },
+    { id: 8,  name: "Garlic Bread",      desc: "Four pieces with herb butter", price: 149, type: "sides" },
+    { id: 9,  name: "Loaded Fries",      desc: "Cheese sauce, peri-peri, spring onion", price: 179, type: "sides" },
+    { id: 10, name: "Chocolate Lava Cake", desc: "Warm, with a molten centre", price: 129, type: "sides" },
+    { id: 11, name: "Cold Drink (500 ml)", desc: "Coke, Sprite or Fanta", price: 60, type: "sides" }
+  ];
+  const WHATSAPP_NUMBER = "919876543210"; // country code + number, no + or spaces
+
+  const cart = {};
+  const rupee = n => "₹" + n.toLocaleString("en-IN");
+  const $ = id => document.getElementById(id);
+
+  function renderMenu(filter = "all") {
+    const list = MENU.filter(i => filter === "all" || i.type === filter);
+    $("menuList").innerHTML = list.map(i => `
+      <div class="item">
+        <h3>${i.type !== "sides" ? `<span class="mark ${i.type}" title="${i.type === "veg" ? "Vegetarian" : "Non-vegetarian"}"></span>` : ""}
+          ${i.name} ${i.tag ? `<span class="tag">${i.tag}</span>` : ""}</h3>
+        <span class="price">${rupee(i.price)}</span>
+        <p>${i.desc}</p>
+        <button class="add" data-id="${i.id}" aria-label="Add ${i.name} to order">Add</button>
+      </div>`).join("");
+  }
+
+  function renderCart() {
+    const ids = Object.keys(cart);
+    const count = ids.reduce((s, id) => s + cart[id], 0);
+    const total = ids.reduce((s, id) => s + cart[id] * MENU.find(m => m.id == id).price, 0);
+    $("cartCount").textContent = count;
+    $("total").textContent = rupee(total);
+    $("lines").innerHTML = ids.length ? ids.map(id => {
+      const m = MENU.find(x => x.id == id);
+      return `<div class="line">
+        <strong>${m.name}</strong><span>${rupee(m.price * cart[id])}</span>
+        <span class="qty">
+          <button data-dec="${id}" aria-label="Remove one ${m.name}">−</button>
+          ${cart[id]}
+          <button data-inc="${id}" aria-label="Add one ${m.name}">+</button>
+        </span>
+      </div>`;
+    }).join("") : `<p class="empty">Your order is empty. Add a pizza from the menu to get started.</p>`;
+
+    const text = "Hi! I'd like to order:\n" + ids.map(id => {
+      const m = MENU.find(x => x.id == id);
+      return `${cart[id]} × ${m.name} — ${rupee(m.price * cart[id])}`;
+    }).join("\n") + `\nTotal: ${rupee(total)}`;
+    const btn = $("orderBtn");
+    btn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+    btn.setAttribute("aria-disabled", ids.length ? "false" : "true");
+  }
+
+  function toggleCart(open) {
+    document.body.classList.toggle("open", open);
+    $("drawer").setAttribute("aria-hidden", String(!open));
+    if (open) $("closeCart").focus();
+  }
+
+  document.querySelector(".filters").addEventListener("click", e => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === chip));
+    renderMenu(chip.dataset.filter);
+  });
+
+  $("menuList").addEventListener("click", e => {
+    const btn = e.target.closest(".add");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    cart[id] = (cart[id] || 0) + 1;
+    renderCart();
+    btn.textContent = "Added";
+    btn.classList.add("added");
+    setTimeout(() => { btn.textContent = "Add"; btn.classList.remove("added"); }, 900);
+  });
+
+  $("lines").addEventListener("click", e => {
+    const inc = e.target.dataset.inc, dec = e.target.dataset.dec;
+    if (inc) cart[inc]++;
+    if (dec) { cart[dec]--; if (cart[dec] <= 0) delete cart[dec]; }
+    renderCart();
+  });
+
+  $("cartBtn").addEventListener("click", () => toggleCart(true));
+  $("closeCart").addEventListener("click", () => toggleCart(false));
+  $("scrim").addEventListener("click", () => toggleCart(false));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") toggleCart(false); });
+
+  // Open/closed indicator
+  (function () {
+    const now = new Date(), d = now.getDay(), h = now.getHours();
+    const [open, close] = d === 0 ? [12, 23] : (d === 5 || d === 6) ? [11, 24] : [11, 23];
+    const isOpen = h >= open && h < close;
+    const el = $("openNow");
+    el.textContent = isOpen ? "Open now — we're taking orders" : "Closed right now — see you at opening time";
+    el.style.color = isOpen ? "var(--basil)" : "var(--tomato)";
+  })();
+
+  $("year").textContent = new Date().getFullYear();
+  renderMenu();
+  renderCart();
+</script>
+</body>
+</html>

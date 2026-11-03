@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact Crust & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tomato: #C8281E;
+    --tomato-deep: #9E1C14;
+    --basil: #2E6B3A;
+    --crust: #E8A33D;
+    --char: #231A16;
+    --bg: #FFFFFF;
+    --surface: #FBF3EC;
+    --text: #231A16;
+    --muted: #6B5A51;
+    --line: #EADBD0;
+    --field: #FFFFFF;
+    --error: #B3261E;
+    --display: "Shrikhand", "Georgia", serif;
+    --body: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1A1311; --surface: #251C19; --text: #F6EDE6; --muted: #BCA99E; --line: #3A2E29;
+      --field: #1F1714; --tomato: #E0412F; --basil: #5FA56E; --error: #FF8A7A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1A1311; --surface: #251C19; --text: #F6EDE6; --muted: #BCA99E; --line: #3A2E29;
+    --field: #1F1714; --tomato: #E0412F; --basil: #5FA56E; --error: #FF8A7A;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  body { margin: 0; font-family: var(--body); font-size: 1.0625rem; line-height: 1.55; background: var(--bg); color: var(--text); }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--crust); outline-offset: 3px; border-radius: 4px; }
+  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+  /* Header (same as home) */
+  header.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--tomato); color: #fff; }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 64px; }
+  .logo { font-family: var(--display); font-size: 1.6rem; text-decoration: none; }
+  nav.links { display: flex; gap: 1.5rem; font-weight: 600; }
+  nav.links a { text-decoration: none; opacity: .9; }
+  nav.links a:hover, nav.links a[aria-current="page"] { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+  .home-btn { background: var(--char); color: #fff; border-radius: 999px; padding: .55rem 1rem; font-weight: 600; font-size: .95rem; text-decoration: none; }
+  @media (max-width: 720px) { nav.links { display: none; } }
+
+  /* Intro band */
+  .intro { background: var(--tomato); color: #fff; padding-block: 2.5rem 5.5rem; }
+  .intro h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.6rem, 7vw, 4.75rem); line-height: 1; margin: 0 0 1rem; }
+  .intro p { font-size: 1.15rem; max-width: 46ch; margin: 0; }
+
+  /* Main grid overlapping the band */
+  .main { margin-top: -3.5rem; display: grid; grid-template-columns: .85fr 1.15fr; gap: 2rem; align-items: start; }
+  @media (max-width: 860px) { .main { grid-template-columns: 1fr; } }
+
+  .ways { display: grid; gap: .75rem; }
+  .way { display: grid; grid-template-columns: 48px 1fr; gap: 1rem; align-items: center; background: var(--bg); border: 2px solid var(--line); border-radius: 14px; padding: 1rem 1.1rem; text-decoration: none; }
+  .way:hover { border-color: var(--tomato); }
+  .way .ic { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); color: var(--tomato); }
+  .way strong { display: block; font-size: 1.05rem; }
+  .way span { color: var(--muted); font-size: .95rem; }
+  .way.wa .ic { background: var(--basil); color: #fff; }
+
+  .hours-card { background: var(--surface); border-radius: 14px; padding: 1.25rem 1.25rem .75rem; margin-top: .75rem; }
+  .hours-card h2 { font-size: 1.1rem; font-family: var(--body); font-weight: 700; margin: 0 0 .25rem; color: var(--text); }
+  .hours { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  .hours td { padding: .5rem 0; border-bottom: 1px solid var(--line); }
+  .hours tr:last-child td { border-bottom: 0; }
+  .hours td:last-child { text-align: right; font-weight: 600; }
+  .status { font-weight: 700; font-size: .95rem; margin: 0 0 .5rem; }
+
+  /* Form card */
+  .form-card { background: var(--bg); border: 2px solid var(--line); border-radius: 18px; padding: clamp(1.25rem, 4vw, 2.25rem); box-shadow: 0 18px 40px -24px rgba(35,26,22,.35); }
+  .form-card h2 { font-family: var(--display); font-weight: 400; color: var(--tomato); font-size: 2rem; margin: 0 0 .25rem; }
+  .form-card > p { color: var(--muted); margin: 0 0 1.5rem; }
+
+  fieldset.topics { border: 0; padding: 0; margin: 0 0 1.25rem; }
+  fieldset.topics legend { font-weight: 600; margin-bottom: .5rem; padding: 0; }
+  .topic-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .topic input { position: absolute; opacity: 0; pointer-events: none; }
+  .topic label { display: inline-block; border: 2px solid var(--line); border-radius: 999px; padding: .45rem 1rem; font-weight: 600; font-size: .95rem; cursor: pointer; }
+  .topic input:checked + label { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .topic input:focus-visible + label { outline: 3px solid var(--crust); outline-offset: 2px; }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-weight: 600; margin-bottom: .35rem; }
+  .field .hint { font-weight: 400; color: var(--muted); font-size: .9rem; }
+  input[type="text"], input[type="tel"], input[type="email"], input[type="date"], input[type="number"], textarea {
+    width: 100%; font: 400 1rem var(--body); color: var(--text); background: var(--field);
+    border: 2px solid var(--line); border-radius: 10px; padding: .75rem .9rem;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--tomato); }
+  textarea { min-height: 130px; resize: vertical; }
+  .err { color: var(--error); font-size: .88rem; margin-top: .3rem; min-height: 0; display: none; }
+  .invalid input, .invalid textarea { border-color: var(--error); }
+  .invalid .err { display: block; }
+  .party-only { display: none; }
+  .is-party .party-only { display: grid; }
+  .counter { text-align: right; font-size: .85rem; color: var(--muted); margin-top: .25rem; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: .5rem; }
+  .btn { border: 0; border-radius: 999px; padding: .9rem 1.6rem; font: 700 1rem var(--body); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .5rem; }
+  .btn-primary { background: var(--basil); color: #fff; }
+  .btn-secondary { background: transparent; color: var(--text); box-shadow: inset 0 0 0 2px var(--line); }
+  .btn-secondary:hover { box-shadow: inset 0 0 0 2px var(--text); }
+  .small { font-size: .88rem; color: var(--muted); margin: .9rem 0 0; }
+
+  .done { display: none; text-align: center; padding: 2rem 0 1rem; }
+  .done svg { width: 72px; height: 72px; }
+  .done h3 { font-family: var(--display); font-weight: 400; font-size: 1.9rem; color: var(--basil); margin: .5rem 0; }
+  .done p { color: var(--muted); max-width: 40ch; margin: 0 auto 1.25rem; }
+  .sent .done { display: block; }
+  .sent form { display: none; }
+
+  /* Visit + FAQ */
+  section.block { padding-block: 4.5rem 3rem; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  @media (max-width: 760px) { .two { grid-template-columns: 1fr; gap: 2.5rem; } }
+  h2.sec { font-family: var(--display); font-weight: 400; font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--tomato); margin: 0 0 1rem; line-height: 1.1; }
+  .map-box { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: var(--surface); border: 2px solid var(--line); }
+  .map-box svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .address { margin: 1rem 0; }
+  .faq details { border-bottom: 1px dashed var(--line); padding-block: 1rem; }
+  .faq summary { font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-size: 1.4rem; line-height: 1; color: var(--tomato); }
+  .faq details[open] summary::after { content: "−"; }
+  .faq p { margin: .6rem 0 0; color: var(--muted); }
+
+  footer { background: var(--char); color: #BCA99E; padding-block: 2rem; font-size: .9rem; margin-top: 2rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+  footer .logo { color: #fff; font-size: 1.3rem; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="./">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="./#menu">Menu</a>
+      <a href="./#deals">Deals</a>
+      <a href="contact.html" aria-current="page">Contact</a>
+    </nav>
+    <a class="home-btn" href="./#menu">Order now</a>
+  </div>
+</header>
+
+<section class="intro">
+  <div class="wrap">
+    <h1>Talk to us.</h1>
+    <p>Questions about an order, a party booking, or just want to tell us how the pizza was? We usually reply within 30 minutes during opening hours.</p>
+  </div>
+</section>
+
+<div class="wrap main">
+  <!-- Quick ways to reach us -->
+  <div>
+    <div class="ways">
+      <a class="way" href="tel:+919876543210">
+        <span class="ic" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+        </span>
+        <div><strong>Call the outlet</strong><span>+91 98765 43210</span></div>
+      </a>
+      <a class="way wa" href="https://wa.me/919876543210" target="_blank" rel="noopener">
+        <span class="ic" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+        </span>
+        <div><strong>Chat on WhatsApp</strong><span>Fastest for orders and order issues</span></div>
+      </a>
+      <a class="way" href="mailto:hello@crustandco.in">
+        <span class="ic" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </span>
+        <div><strong>Email us</strong><span>hello@crustandco.in</span></div>
+      </a>
+    </div>
+
+    <div class="hours-card">
+      <h2>Opening hours</h2>
+      <p class="status" id="status"></p>
+      <table class="hours">
+        <tr><td>Monday – Thursday</td><td>11 am – 11 pm</td></tr>
+        <tr><td>Friday – Saturday</td><td>11 am – 12 am</td></tr>
+        <tr><td>Sunday</td><td>12 pm – 11 pm</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Contact form -->
+  <div class="form-card" id="card">
+    <h2>Send us a message</h2>
+    <p>Fill this in and it opens WhatsApp with your message ready to send.</p>
+
+    <form id="form" action="/process" method="POST" >
+
+
+      <div class="row">
+        <div class="field" data-field="name">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="username">
+          <div class="err">Enter your name so we know who we're talking to.</div>
+        </div>
+        <div class="field" data-field="phone">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" placeholder="98765 43210">
+          <div class="err">Enter a 10-digit mobile number.</div>
+        </div>
+      </div>
+
+      <div class="field" data-field="email">
+        <label for="email">Email <span class="hint">(optional)</span></label>
+        <input type="email" id="email" name="email" >
+        <div class="err">That email doesn't look right. Check it or leave it blank.</div>
+      </div>
+
+
+
+      <div class="field" data-field="message">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" maxlength="600" placeholder="Tell us what happened or what you need. For an order, include the order time."></textarea>
+        <div class="counter"><span id="count">0</span> / 600</div>
+        <div class="err">Write a short message (at least 10 characters).</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </div>
+      <p class="small">We only use your number to reply to this message.</p>
+    </form>
+
+    <div class="done" role="status" aria-live="polite">
+      <svg viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="none" stroke="var(--basil)" stroke-width="4"/><path d="m22 37 10 10 18-20" fill="none" stroke="var(--basil)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>Message ready</h3>
+      <p>Your message has opened in a new tab. Press send there and we'll get back to you shortly.</p>
+      <button class="btn btn-secondary" type="button" id="again">Write another message</button>
+    </div>
+  </div>
+</div>
+
+<section class="block">
+  <div class="wrap two">
+    <div>
+      <h2 class="sec">Find the oven</h2>
+      <div class="map-box" aria-hidden="true">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="250" fill="var(--surface)"/>
+          <g stroke="var(--line)" stroke-width="14" fill="none">
+            <path d="M-10 160 H410"/><path d="M120 -10 V260"/><path d="M290 -10 V260"/><path d="M-10 60 Q200 90 410 40"/>
+          </g>
+          <g stroke="var(--bg)" stroke-width="2" stroke-dasharray="8 8" fill="none">
+            <path d="M-10 160 H410"/><path d="M120 -10 V260"/>
+          </g>
+          <rect x="140" y="85" width="40" height="55" rx="4" fill="var(--line)"/><rect x="220" y="178" width="55" height="40" rx="4" fill="var(--line)"/>
+          <rect x="20" y="180" width="80" height="45" rx="4" fill="var(--line)"/><rect x="310" y="80" width="70" height="60" rx="4" fill="var(--line)"/>
+          <g transform="translate(205 118)">
+            <path d="M0 0c-14 0-24-10-24-23S-14-48 0-48s24 11 24 25S0 0 0 0z" fill="var(--tomato)" transform="translate(0 30)"/>
+            <circle cx="0" cy="7" r="9" fill="#fff"/>
+          </g>
+        </svg>
+      </div>
+      <p class="address"><strong>Crust & Co.</strong><br>Shop 12, Main Market Road<br>Your City – 110001</p>
+      <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Crust+%26+Co+Main+Market+Road" target="_blank" rel="noopener">Get directions</a>
+    </div>
+
+    <div class="faq">
+      <h2 class="sec">Before you write</h2>
+      <details>
+        <summary>How far do you deliver?</summary>
+        <p>Free delivery within 5 km of the outlet. Up to 8 km we charge ₹40. Beyond that, call us and we'll see what we can do.</p>
+      </details>
+      <details>
+        <summary>My order is late or wrong. What should I do?</summary>
+        <p>Message us on WhatsApp with your name and order time. We'll check with the kitchen and fix it, usually with a fresh pizza or a refund.</p>
+      </details>
+      <details>
+        <summary>How early should I book a party order?</summary>
+        <p>At least 24 hours ahead for up to 20 guests, and 3 days ahead for larger groups. Choose "Party or bulk order" in the form above.</p>
+      </details>
+      <details>
+        <summary>Do you have Jain or gluten-free options?</summary>
+        <p>We make Jain pizzas (no onion, garlic or root vegetables) on request. We don't have a gluten-free base yet because our kitchen handles flour all day.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span id="year"></span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script>
+  const WHATSAPP_NUMBER = "919876543210";
+  const EMAIL = "hello@crustandco.in";
+  const $ = id => document.getElementById(id);
+  const form = $("form");
+
+  // Show party fields only for party orders
+  function syncTopic() {
+    const topic = form.querySelector('input[name="topic"]:checked').value;
+    form.classList.toggle("is-party", topic === "Party / bulk order");
+  }
+  form.addEventListener("change", e => { if (e.target.name === "topic") syncTopic(); });
+
+  // Character counter
+  $("message").addEventListener("input", e => { $("count").textContent = e.target.value.length; });
+
+  // Clear an error as soon as the person fixes the field
+  form.addEventListener("input", e => {
+    const f = e.target.closest(".field");
+    if (f && f.classList.contains("invalid") && check(f.dataset.field)) f.classList.remove("invalid");
+  });
+
+  function check(name) {
+    const v = ($(name)?.value || "").trim();
+    const party = form.classList.contains("is-party");
+    switch (name) {
+      case "name": return v.length >= 2;
+      case "phone": return /^(\+?91[\s-]?)?[6-9]\d{4}[\s-]?\d{5}$/.test(v);
+      case "email": return v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+      case "message": return v.length >= 10;
+      case "date": {
+        if (!party) return true;
+        if (!v) return false;
+        const tomorrow = new Date(); tomorrow.setHours(0,0,0,0); tomorrow.setDate(tomorrow.getDate() + 1);
+        return new Date(v + "T00:00") >= tomorrow;
+      }
+      case "guests": return !party || (Number(v) >= 5 && Number(v) <= 500);
+    }
+    return true;
+  }
+
+  function validate() {
+    let first = null;
+    ["name", "phone", "email", "date", "guests", "message"].forEach(n => {
+      const f = form.querySelector(`[data-field="${n}"]`);
+      const ok = check(n);
+      f.classList.toggle("invalid", !ok);
+      if (!ok && !first) first = $(n);
+    });
+    if (first) first.focus();
+    return !first;
+  }
+
+  function compose() {
+    const topic = form.querySelector('input[name="topic"]:checked').value;
+    const lines = [
+      `Hi Crust & Co., I'm contacting you about: ${topic}`,
+      `Name: ${$("name").value.trim()}`,
+      `Phone: ${$("phone").value.trim()}`
+    ];
+    if ($("email").value.trim()) lines.push(`Email: ${$("email").value.trim()}`);
+    if (form.classList.contains("is-party")) {
+      lines.push(`Event date: ${$("date").value}`, `Guests: ${$("guests").value}`);
+    }
+    lines.push("", $("message").value.trim());
+    return { topic, text: lines.join("\n") };
+  }
+
+  function finish() { $("card").classList.add("sent"); }
+
+
+
+
+
+
+
+  // Open / closed status
+  (function () {
+    const now = new Date(), d = now.getDay(), h = now.getHours();
+    const [open, close] = d === 0 ? [12, 23] : (d === 5 || d === 6) ? [11, 24] : [11, 23];
+    const isOpen = h >= open && h < close;
+    const el = $("status");
+    el.textContent = isOpen ? "Open now. Expect a quick reply." : "Closed now. We'll reply when we open.";
+    el.style.color = isOpen ? "var(--basil)" : "var(--tomato)";
+  })();
+
+  $("year").textContent = new Date().getFullYear();
+  syncTopic();
+</script>
+</body>
+</html>
