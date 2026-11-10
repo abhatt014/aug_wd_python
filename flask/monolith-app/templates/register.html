@@ -38,12 +38,13 @@
     <h2>Your details</h2>
     <p class="sub">All fields are needed so the rider can reach you.</p>
 
-    <!-- {% for category, msg in get_flashed_messages(with_categories=true) %} ... {% endfor %} -->
-    <div class="form-alert error" hidden>An account with this email already exists. Log in instead.</div>
+    {% if error %}
+    <div class="form-alert error" >{{ error }}</div>
+    {% endif %}
 
     <!-- POST /register  fields: name, email, phone, address, password, confirm_password, terms, next
          Store a password HASH (werkzeug.security.generate_password_hash), never the password. -->
-    <form action="/register" method="post" data-validate novalidate >
+    <form action="/processregistration" method="post" data-validate novalidate >
       <input type="hidden" name="next" value="">
       <div class="field">
         <label for="name">Full name</label>
@@ -58,8 +59,7 @@
         </div>
         <div class="field">
           <label for="phone">Mobile number</label>
-          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" required
-                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" placeholder="98765 43210">
+          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="98765 43210">
           <div class="err">Enter a 10-digit mobile number.</div>
         </div>
       </div>

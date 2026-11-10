@@ -29,8 +29,15 @@
 
 <section class="band">
   <div class="wrap">
+    {%if name %}
     <h1>Hello {{ name }}, your message has been sent.</h1>
     <p>Click <a href="/">here</a> to go back to the home page.</p>
+    {%endif%}
+    {%if newuser %}
+    <h1>Welcome, {{ newuser }}!</h1>
+    <p>Thank you for creating an account with us.</p>
+    {% endif %}
+    
   </div>
 </section>
 
