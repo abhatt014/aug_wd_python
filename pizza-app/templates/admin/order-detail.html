@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order #1048 — Crust & Co. admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
+<link rel="stylesheet" href="../../static/css/style.css">
+<link rel="stylesheet" href="../../static/css/admin.css">
+</head>
+<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
+<body class="admin" data-demo>
+<div class="shell">
+  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
+  <aside class="side">
+    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <nav aria-label="Admin">
+      <a href="dashboard.html"><span>Dashboard</span></a>
+      <a href="orders.html" aria-current="page"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="menu.html"><span>Menu</span></a>
+      <a href="users.html"><span>Registered users</span></a>
+      <a href="revenue.html"><span>Revenue report</span></a>
+    </nav>
+    <div class="bottom">
+      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
+      <a href="../index.html">View the shop</a>
+      <a href="../index.html" data-logout>Log out</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <!-- GET /admin/orders/<order_id>
+         Jinja needs: order (id, status, created_at, name, phone, address, landmark, notes, total, reject_reason),
+                      order.items, order.history (status, changed_at) -->
+    <div data-order-detail data-order-id="1048" data-status="Pending">
+      <a class="back" href="orders.html">← All orders</a>
+      <div class="page-head">
+        <div>
+          <h1>Order #1048</h1>
+          <p>Placed today at 8:41 pm by Rahul Sharma</p>
+        </div>
+        <span class="status" data-status="Pending">Pending approval</span>
+      </div>
+
+      <div class="panel" style="padding-bottom:.5rem">
+        <ol class="tracker" aria-label="Order progress" style="margin:0 0 .75rem">
+          <li>Pending approval</li><li>Accepted</li><li>Preparing</li><li>Out for delivery</li><li>Delivered</li>
+        </ol>
+      </div>
+
+      <div class="detail-grid">
+        <div>
+          <section class="panel">
+            <h2>Items</h2>
+            <div class="table-wrap">
+              <table class="data">
+                <thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Price</th><th class="num">Amount</th></tr></thead>
+                <tbody><tr><td>Paneer Tikka</td><td class="num">2</td><td class="num">₹399</td><td class="num">₹798</td></tr><tr><td>Garlic Bread</td><td class="num">1</td><td class="num">₹149</td><td class="num">₹149</td></tr></tbody>
+                <tfoot>
+                  <tr><td colspan="3">Delivery</td><td class="num">Free</td></tr>
+                  <tr><td colspan="3">Total to collect in cash</td><td class="num">₹947</td></tr>
+                </tfoot>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Customer and delivery</h2>
+            <dl class="facts">
+              <dt>Name</dt><dd>Rahul Sharma</dd>
+              <dt>Phone</dt><dd><a class="link" href="tel:+919810023456">98100 23456</a></dd>
+              <dt>Address</dt><dd>B-14, Green Park Extension, Your City – 110016</dd>
+              <dt>Landmark</dt><dd>Opposite the park gate</dd>
+              <dt>Notes</dt><dd>Less spicy, please.</dd>
+              <dt>Payment</dt><dd>Cash on delivery</dd>
+            </dl>
+          </section>
+        </div>
+
+        <div>
+          <section class="panel next-step">
+            <h2>Next step</h2>
+
+            <div data-when="Pending">
+              <p>Check the address and items, then accept so the kitchen can start.</p>
+              <div class="acts">
+                <form method="post" action="/admin/orders/1048/status" data-demo="status" data-order="1048">
+                  <input type="hidden" name="status" value="Accepted">
+                  <button class="btn btn-primary" type="submit">Accept order</button>
+                </form>
+                <button class="btn btn-danger" type="button" data-reject="1048" data-action="/admin/orders/1048/status">Reject</button>
+              </div>
+            </div>
+
+            <div data-when="Accepted" hidden>
+              <p>Accepted. Start it when the dough goes on the peel.</p>
+              <form method="post" action="/admin/orders/1048/status" data-demo="status" data-order="1048">
+                <input type="hidden" name="status" value="Preparing">
+                <button class="btn btn-primary" type="submit">Start preparing</button>
+              </form>
+            </div>
+
+            <div data-when="Preparing" hidden>
+              <p>In the oven. Send it out once it's boxed.</p>
+              <form method="post" action="/admin/orders/1048/status" data-demo="status" data-order="1048">
+                <input type="hidden" name="status" value="Out for delivery">
+                <button class="btn btn-primary" type="submit">Send out for delivery</button>
+              </form>
+            </div>
+
+            <div data-when="Out for delivery" hidden>
+              <p>On the way. The rider collects <strong>₹947</strong> in cash.</p>
+              <form method="post" action="/admin/orders/1048/status" data-demo="status" data-order="1048">
+                <input type="hidden" name="status" value="Delivered">
+                <button class="btn btn-primary" type="submit">Mark delivered</button>
+              </form>
+            </div>
+
+            <div data-when="Delivered" hidden>
+              <p>Delivered and ₹947 collected. Nothing more to do.</p>
+            </div>
+
+            <div data-when="Rejected" hidden>
+              <p class="reason" data-reject-reason>This order was rejected.</p>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>History</h2>
+            <ol class="timeline">
+              <li>Placed by the customer<time>Today, 8:41 pm</time></li>
+            </ol>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Reject dialog. admin.js sets the form action from the button's data-action. -->
+<dialog class="modal" id="rejectDialog" aria-labelledby="rejectTitle">
+  <form method="post" action="" data-validate novalidate data-demo="status" data-order="">
+    <input type="hidden" name="status" value="Rejected">
+    <h2 id="rejectTitle" data-reject-title>Reject this order?</h2>
+    <p>The customer sees this reason on their My orders page.</p>
+    <div class="reasons">
+      <button type="button">Outside our delivery area</button>
+      <button type="button">An item in this order is sold out</button>
+      <button type="button">Kitchen is too busy right now</button>
+      <button type="button">Kitchen is closing for the night</button>
+    </div>
+    <div class="field">
+      <label for="reason">Reason</label>
+      <textarea id="reason" name="reason" required minlength="5" maxlength="200" style="min-height:80px"></textarea>
+      <div class="err">Give the customer a reason (at least 5 characters).</div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-secondary btn-sm" type="button" data-close-dialog>Keep order</button>
+      <button class="btn btn-tomato btn-sm" type="submit">Reject order</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="../../static/js/validate.js"></script>
+<script src="../../static/js/app.js"></script>
+<script src="../../static/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revenue report — Crust & Co. admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
+<link rel="stylesheet" href="../../static/css/style.css">
+<link rel="stylesheet" href="../../static/css/admin.css">
+</head>
+<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
+<body class="admin" data-demo>
+<div class="shell">
+  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
+  <aside class="side">
+    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <nav aria-label="Admin">
+      <a href="dashboard.html"><span>Dashboard</span></a>
+      <a href="orders.html"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="menu.html"><span>Menu</span></a>
+      <a href="users.html"><span>Registered users</span></a>
+      <a href="revenue.html" aria-current="page"><span>Revenue report</span></a>
+    </nav>
+    <div class="bottom">
+      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
+      <a href="../index.html">View the shop</a>
+      <a href="../index.html" data-logout>Log out</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <div class="page-head">
+      <div>
+        <h1>Revenue report</h1>
+        <p>Cash collected from delivered orders. Pending, in-progress and rejected orders are not counted.</p>
+      </div>
+    </div>
+
+    <section class="panel">
+      <!-- GET /admin/revenue?from=YYYY-MM-DD&to=YYYY-MM-DD -->
+      <form class="filter-form" id="revenueFilter" action="/admin/revenue" method="get" data-demo="revenueFilter">
+        <div class="field">
+          <label for="from">From</label>
+          <input type="date" id="from" name="from" value="2026-11-01" required>
+        </div>
+        <div class="field">
+          <label for="to">To</label>
+          <input type="date" id="to" name="to" value="2026-11-05" data-today="2026-11-05" required>
+        </div>
+        <button class="btn btn-tomato" type="submit">Show report</button>
+      </form>
+      <div class="presets" aria-label="Quick ranges">
+        <button class="chip" type="button" data-range="today">Today</button>
+        <button class="chip" type="button" data-range="7">Last 7 days</button>
+        <button class="chip" type="button" data-range="month">This month</button>
+        <button class="chip" type="button" data-range="30">Last 30 days</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Summary for <span id="rangeLabel">1 Nov 2026 to 5 Nov 2026</span></h2>
+      </div>
+      <div class="summary-line">
+        <div><b id="revTotal">₹3,628</b><span>revenue</span></div>
+        <div><b id="revOrders">5</b><span>delivered orders</span></div>
+        <div><b id="revAvg">₹726</b><span>average order</span></div>
+      </div>
+    </section>
+
+    <div class="detail-grid split">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>By day</h2>
+          <button class="btn btn-secondary btn-sm" type="button" data-csv="#dailyTable" data-filename="revenue-by-day">Download CSV</button>
+        </div>
+        <div class="table-wrap">
+          <!-- SQL idea: SELECT DATE(created_at), COUNT(*), SUM(total) FROM orders
+               WHERE status='Delivered' AND DATE(created_at) BETWEEN %s AND %s GROUP BY DATE(created_at) -->
+          <table class="data" id="dailyTable">
+            <thead><tr><th>Date</th><th class="num">Orders</th><th class="num" data-csv="Revenue (INR)">Revenue</th></tr></thead>
+            <tbody><tr data-row data-date="2026-11-05"><td data-csv="2026-11-05">5 Nov 2026</td><td class="num">1</td><td class="num" data-csv="747">₹747</td></tr><tr data-row data-date="2026-11-04"><td data-csv="2026-11-04">4 Nov 2026</td><td class="num">2</td><td class="num" data-csv="2054">₹2,054</td></tr><tr data-row data-date="2026-11-03"><td data-csv="2026-11-03">3 Nov 2026</td><td class="num">2</td><td class="num" data-csv="827">₹827</td></tr></tbody>
+            <tfoot><tr><td>Total</td><td class="num" id="dailyFootOrders">5</td><td class="num" id="dailyFootTotal">₹3,628</td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>By item</h2>
+          <button class="btn btn-secondary btn-sm" type="button" data-csv="#itemsTable" data-filename="revenue-by-item">Download CSV</button>
+        </div>
+        <div class="table-wrap">
+          <!-- SQL idea: JOIN order_items, GROUP BY menu_item_id, ORDER BY revenue DESC -->
+          <table class="data" id="itemsTable">
+            <thead><tr><th>Item</th><th class="num">Sold</th><th class="num" data-csv="Revenue (INR)">Revenue</th></tr></thead>
+            <tbody><tr data-row><td>Pepperoni</td><td class="num">3</td><td class="num" data-csv="1347">₹1,347</td></tr><tr data-row><td>Margherita</td><td class="num">3</td><td class="num" data-csv="897">₹897</td></tr><tr data-row><td>Garlic Bread</td><td class="num">3</td><td class="num" data-csv="447">₹447</td></tr><tr data-row><td>Paneer Tikka</td><td class="num">1</td><td class="num" data-csv="399">₹399</td></tr><tr data-row><td>Farmhouse</td><td class="num">1</td><td class="num" data-csv="349">₹349</td></tr><tr data-row><td>Chocolate Lava Cake</td><td class="num">1</td><td class="num" data-csv="129">₹129</td></tr><tr data-row><td>Cold Drink (500 ml)</td><td class="num">1</td><td class="num" data-csv="60">₹60</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Delivered orders</h2>
+        <button class="btn btn-secondary btn-sm" type="button" data-csv="#ordersReport" data-filename="delivered-orders">Download CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data" id="ordersReport">
+          <thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Items</th><th class="num" data-csv="Total (INR)">Total</th></tr></thead>
+          <tbody>
+              <tr data-row data-date="2026-11-05" data-date-label="5 Nov 2026" data-total="747" data-items="Margherita:2:598|Garlic Bread:1:149">
+                <td>#1043</td><td data-csv="2026-11-05">5 Nov 2026, 7:20 pm</td><td>Ananya Iyer</td><td>2× Margherita, 1× Garlic Bread</td><td class="num" data-csv="747">₹747</td>
+              </tr>
+              <tr data-row data-date="2026-11-04" data-date-label="4 Nov 2026" data-total="409" data-items="Farmhouse:1:349|Cold Drink (500 ml):1:60">
+                <td>#1041</td><td data-csv="2026-11-04">4 Nov 2026, 9:05 pm</td><td>Rahul Sharma</td><td>1× Farmhouse, 1× Cold Drink (500 ml)</td><td class="num" data-csv="409">₹409</td>
+              </tr>
+              <tr data-row data-date="2026-11-04" data-date-label="4 Nov 2026" data-total="1645" data-items="Pepperoni:3:1347|Garlic Bread:2:298">
+                <td>#1040</td><td data-csv="2026-11-04">4 Nov 2026, 7:40 pm</td><td>Meera Joshi</td><td>3× Pepperoni, 2× Garlic Bread</td><td class="num" data-csv="1645">₹1,645</td>
+              </tr>
+              <tr data-row data-date="2026-11-03" data-date-label="3 Nov 2026" data-total="399" data-items="Paneer Tikka:1:399">
+                <td>#1039</td><td data-csv="2026-11-03">3 Nov 2026, 8:15 pm</td><td>Arjun Mehta</td><td>1× Paneer Tikka</td><td class="num" data-csv="399">₹399</td>
+              </tr>
+              <tr data-row data-date="2026-11-03" data-date-label="3 Nov 2026" data-total="428" data-items="Margherita:1:299|Chocolate Lava Cake:1:129">
+                <td>#1038</td><td data-csv="2026-11-03">3 Nov 2026, 1:10 pm</td><td>Sneha Kapoor</td><td>1× Margherita, 1× Chocolate Lava Cake</td><td class="num" data-csv="428">₹428</td>
+              </tr>
+            <tr class="no-rows" hidden><td colspan="5">No delivered orders in this period.</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="4">Total</td><td class="num" id="ordersFootTotal">₹3,628</td></tr></tfoot>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="../../static/js/validate.js"></script>
+<script src="../../static/js/app.js"></script>
+<script src="../../static/js/admin.js"></script>
+<script src="../../static/js/revenue.js"></script>
+</body>
+</html>

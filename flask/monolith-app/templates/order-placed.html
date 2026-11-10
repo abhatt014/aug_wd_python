@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order placed — Crust & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body data-demo>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="index.html">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#menu">Menu</a>
+      <a href="contact.html">Contact</a>
+      <a href="my-orders.html">My orders</a>
+    </nav>
+    <div class="bar-right">
+      <span class="hello">Hi, <span data-user-name>Rahul</span></span>
+      <a class="pill-btn light" href="index.html" data-logout>Log out</a>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="narrow">
+    <h1>Order sent to the shop.</h1>
+    <p>We'll accept it within a few minutes. This page and My orders show the latest status.</p>
+  </div>
+</section>
+
+<!-- GET /order/<order_id>/placed
+     Jinja needs: order (id, status, created_at, address, total), order.items (name, qty, line_total) -->
+<div class="narrow overlap">
+  <div class="card">
+    <svg class="big-check" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="none" stroke="var(--basil)" stroke-width="4"/><path d="m22 37 10 10 18-20" fill="none" stroke="var(--basil)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h2 class="center">Order <span data-placed-id>#1048</span></h2>
+    <p class="sub center"><span class="status" data-status="Pending">Pending approval</span></p>
+
+    <ol class="tracker" aria-label="Order progress">
+      <li class="now">Waiting for approval</li>
+      <li>Accepted</li>
+      <li>Preparing</li>
+      <li>Out for delivery</li>
+      <li>Delivered</li>
+    </ol>
+
+    <h3>What you ordered</h3>
+    <ul class="order-items" id="placedItems">
+      <li><span>2 × Paneer Tikka</span><span>₹798</span></li>
+      <li><span>1 × Garlic Bread</span><span>₹149</span></li>
+      <li class="tot"><span>Total (cash on delivery)</span><span>₹947</span></li>
+    </ul>
+
+    <p class="order-meta" style="margin-top:1rem"><strong>Delivering to:</strong> <span data-placed-address>B-14, Green Park Extension, Your City – 110016</span></p>
+    <p class="order-meta">If the shop can't take the order, you'll see the reason on My orders and nothing is charged.</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem">
+      <a class="btn btn-primary" href="my-orders.html">Track my order</a>
+      <a class="btn btn-secondary" href="index.html#menu">Back to the menu</a>
+    </div>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script src="../static/js/validate.js"></script>
+<script src="../static/js/app.js"></script>
+<script src="../static/js/cart.js"></script>
+</body>
+</html>

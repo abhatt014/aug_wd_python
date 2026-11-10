@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit menu item — Crust & Co. admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
+<link rel="stylesheet" href="../../static/css/style.css">
+<link rel="stylesheet" href="../../static/css/admin.css">
+</head>
+<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
+<body class="admin" data-demo>
+<div class="shell">
+  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
+  <aside class="side">
+    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <nav aria-label="Admin">
+      <a href="dashboard.html"><span>Dashboard</span></a>
+      <a href="orders.html"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="menu.html" aria-current="page"><span>Menu</span></a>
+      <a href="users.html"><span>Registered users</span></a>
+      <a href="revenue.html"><span>Revenue report</span></a>
+    </nav>
+    <div class="bottom">
+      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
+      <a href="../index.html">View the shop</a>
+      <a href="../index.html" data-logout>Log out</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <a class="back" href="menu.html">← Menu</a>
+    <div class="page-head">
+      <div>
+        <!-- Jinja: {% if item %}Edit {{ item.name }}{% else %}Add an item{% endif %} -->
+        <h1>Edit Paneer Tikka</h1>
+        <p>Changes show on the website as soon as you save.</p>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <!-- Add:  POST /admin/menu/new
+           Edit: POST /admin/menu/<item_id>/edit
+           fields: name, description, category (pizza | sides), type (veg | nonveg), price, tag, available -->
+      <form class="panel" id="itemForm" action="/admin/menu/3/edit" method="post" data-validate novalidate
+            data-demo="saveItem" data-next="menu.html">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required minlength="2" maxlength="60" value="Paneer Tikka">
+          <div class="err">Give the item a name.</div>
+        </div>
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" maxlength="120" required style="min-height:80px">Tandoori paneer, onion, green chilli, mint drizzle</textarea>
+          <div class="err">Add a short description (what's on it).</div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option value="pizza" selected>Pizza</option>
+              <option value="sides">Sides & drinks</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="price">Price (₹)</label>
+            <input type="number" id="price" name="price" required min="1" max="5000" step="1" value="399">
+            <div class="err">Enter a price between ₹1 and ₹5,000.</div>
+          </div>
+        </div>
+        <div class="row">
+          <fieldset class="field" style="border:0;padding:0;margin:0 0 1rem">
+            <legend class="label">Veg or non-veg</legend>
+            <label class="check"><input type="radio" name="type" value="veg" checked> Vegetarian</label>
+            <label class="check" style="margin-top:.4rem"><input type="radio" name="type" value="nonveg"> Non-vegetarian</label>
+          </fieldset>
+          <div class="field">
+            <label for="tag">Label <span class="hint">(optional)</span></label>
+            <select id="tag" name="tag">
+              <option value="">None</option>
+              <option value="Bestseller" selected>Bestseller</option>
+              <option value="Spicy">Spicy</option>
+              <option value="New">New</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="check"><input type="checkbox" name="available" value="1" checked> On the menu and available to order</label>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem">
+          <button class="btn btn-tomato" type="submit">Save item</button>
+          <a class="btn btn-secondary" href="menu.html">Cancel</a>
+        </div>
+      </form>
+
+      <aside class="panel">
+        <h2>How customers see it</h2>
+        <div class="item" id="itemPreview" style="border:0;padding:0">
+          <h3><span class="mark veg" data-p-mark></span><span data-p-name>Paneer Tikka</span> <span class="tag" data-p-tag>Bestseller</span></h3>
+          <span class="price" data-p-price>₹399</span>
+          <p data-p-desc>Tandoori paneer, onion, green chilli, mint drizzle</p>
+          <button class="add" type="button" tabindex="-1" aria-hidden="true">Add</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script src="../../static/js/validate.js"></script>
+<script src="../../static/js/app.js"></script>
+<script src="../../static/js/admin.js"></script>
+</body>
+</html>

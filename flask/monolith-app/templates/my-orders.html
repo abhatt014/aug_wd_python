@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My orders — Crust & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body data-demo>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="index.html">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#menu">Menu</a>
+      <a href="contact.html">Contact</a>
+      <a href="my-orders.html" aria-current="page">My orders</a>
+    </nav>
+    <div class="bar-right">
+      <a class="pill-btn light" href="login.html?next=my-orders.html" data-auth="guest">Log in</a>
+      <span class="hello" data-auth="user">Hi, <span data-user-name>Rahul</span></span>
+      <a class="pill-btn light" href="index.html" data-auth="user" data-logout>Log out</a>
+      <a class="pill-btn" href="checkout.html">Your order <span class="cart-count" data-cart-count>0</span></a>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <h1>My orders.</h1>
+    <p>Refresh this page to see the latest status of your order.</p>
+  </div>
+</section>
+
+<div class="wrap overlap" style="max-width:820px">
+
+  <div class="card gate" data-auth="guest" hidden>
+    <h2>Log in to see your orders</h2>
+    <p>Your order history is saved to your account.</p>
+    <a class="btn btn-tomato" href="login.html?next=my-orders.html">Log in</a>
+  </div>
+
+  <!-- GET /my-orders  (@login_required)
+       Jinja: {% for order in orders %} ... {% else %} <empty message> {% endfor %}
+       Show the tracker only while the order is active. -->
+  <div data-auth="user">
+    <div class="card">
+
+      <article class="order-card" data-latest-order>
+        <div class="order-head">
+          <div>
+            <h3>Order <span data-placed-id>#1048</span></h3>
+            <p class="order-meta">Today, 8:41 pm</p>
+          </div>
+          <span class="status" data-status="Pending">Pending approval</span>
+        </div>
+        <ol class="tracker" aria-label="Order progress">
+          <li class="now">Waiting for approval</li><li>Accepted</li><li>Preparing</li><li>Out for delivery</li><li>Delivered</li>
+        </ol>
+        <ul class="order-items" id="placedItems">
+          <li><span>2 × Paneer Tikka</span><span>₹798</span></li>
+          <li><span>1 × Garlic Bread</span><span>₹149</span></li>
+          <li class="tot"><span>Total</span><span>₹947</span></li>
+        </ul>
+      </article>
+
+      <article class="order-card">
+        <div class="order-head">
+          <div>
+            <h3>Order #1041</h3>
+            <p class="order-meta">4 Nov 2026, 9:05 pm</p>
+          </div>
+          <span class="status" data-status="Delivered">Delivered</span>
+        </div>
+        <ul class="order-items">
+          <li><span>1 × Farmhouse</span><span>₹349</span></li>
+          <li><span>1 × Cold Drink (500 ml)</span><span>₹60</span></li>
+          <li class="tot"><span>Total</span><span>₹409</span></li>
+        </ul>
+      </article>
+
+      <article class="order-card">
+        <div class="order-head">
+          <div>
+            <h3>Order #1029</h3>
+            <p class="order-meta">28 Oct 2026, 10:48 pm</p>
+          </div>
+          <span class="status" data-status="Rejected">Rejected</span>
+        </div>
+        <ul class="order-items">
+          <li><span>1 × BBQ Chicken</span><span>₹469</span></li>
+          <li class="tot"><span>Total</span><span>₹469</span></li>
+        </ul>
+        <p class="reason">The shop said: Kitchen is closing for the night. Please order again tomorrow.</p>
+      </article>
+
+      <!-- Empty state (when the customer has no orders):
+      <p class="empty">You haven't ordered yet. <a class="link" href="index.html#menu">Pick a pizza</a> to get started.</p> -->
+    </div>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script src="../static/js/validate.js"></script>
+<script src="../static/js/app.js"></script>
+<script src="../static/js/cart.js"></script>
+</body>
+</html>

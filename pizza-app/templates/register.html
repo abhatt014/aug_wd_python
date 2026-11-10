@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create an account — Crust & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body data-demo>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="index.html">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#menu">Menu</a>
+      <a href="index.html#deals">Deals</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="bar-right">
+      <a class="pill-btn light" href="login.html">Log in</a>
+      <a class="pill-btn" href="checkout.html">Your order <span class="cart-count" data-cart-count>0</span></a>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="narrow">
+    <h1>Create your account.</h1>
+    <p>You only do this once. Next time, your name, phone and address are filled in for you.</p>
+  </div>
+</section>
+
+<div class="narrow overlap">
+  <div class="card">
+    <h2>Your details</h2>
+    <p class="sub">All fields are needed so the rider can reach you.</p>
+
+    <!-- {% for category, msg in get_flashed_messages(with_categories=true) %} ... {% endfor %} -->
+    <div class="form-alert error" hidden>An account with this email already exists. Log in instead.</div>
+
+    <!-- POST /register  fields: name, email, phone, address, password, confirm_password, terms, next
+         Store a password HASH (werkzeug.security.generate_password_hash), never the password. -->
+    <form action="/register" method="post" data-validate novalidate data-demo="register">
+      <input type="hidden" name="next" value="">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" autocomplete="name" required minlength="2" maxlength="80">
+        <div class="err">Enter your name.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required maxlength="120">
+          <div class="err">Enter a valid email, like name@example.com.</div>
+        </div>
+        <div class="field">
+          <label for="phone">Mobile number</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" required
+                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" placeholder="98765 43210">
+          <div class="err">Enter a 10-digit mobile number.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="address">Delivery address</label>
+        <textarea id="address" name="address" autocomplete="street-address" required minlength="10" maxlength="250" style="min-height:80px" placeholder="House number, street, area, city and PIN"></textarea>
+        <div class="err">Enter your full address so we can deliver.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password" autocomplete="new-password" required minlength="6">
+            <button class="pw-toggle" type="button" aria-label="Show password">Show</button>
+          </div>
+          <div class="err">Use at least 6 characters.</div>
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input type="password" id="confirm" name="confirm_password" autocomplete="new-password" required data-match="#password">
+          <div class="err">The two passwords don't match.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" name="terms" value="1" required> I agree to pay cash when my order is delivered.</label>
+        <div class="err">Tick this box to create your account.</div>
+      </div>
+      <button class="btn btn-tomato btn-block" type="submit">Create account</button>
+    </form>
+
+    <p class="alt">Already registered? <a href="login.html" data-keep-next>Log in</a></p>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script src="../static/js/validate.js"></script>
+<script src="../static/js/app.js"></script>
+<script src="../static/js/cart.js"></script>
+</body>
+</html>

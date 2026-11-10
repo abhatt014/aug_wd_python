@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Crust & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/style.css">
+<style>
+  /* Page-only: hide the form once it's sent */
+  .done { display: none; text-align: center; padding: 2rem 0 1rem; }
+  .done h3 { font-family: var(--display); font-weight: 400; font-size: 1.9rem; color: var(--basil); margin: .5rem 0; }
+  .done p { color: var(--muted); max-width: 40ch; margin: 0 auto 1.25rem; }
+  .sent .done { display: block; }
+  .sent form, .sent > h2, .sent > .sub { display: none; }
+</style>
+</head>
+<body data-demo>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="index.html">Crust & Co.</a>
+
+
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <h1>Hello {{ name }}, your message has been sent.</h1>
+    <p>Click <a href="/">here</a> to go back to the home page.</p>
+  </div>
+</section>
+
+
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script src="../static/js/validate.js"></script>
+<script src="../static/js/app.js"></script>
+<script src="../static/js/cart.js"></script>
+<script src="../static/js/contact.js"></script>
+</body>
+</html>

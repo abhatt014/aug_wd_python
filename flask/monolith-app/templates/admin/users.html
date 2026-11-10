@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registered users — Crust & Co. admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
+<link rel="stylesheet" href="../../static/css/style.css">
+<link rel="stylesheet" href="../../static/css/admin.css">
+</head>
+<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
+<body class="admin" data-demo>
+<div class="shell">
+  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
+  <aside class="side">
+    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <nav aria-label="Admin">
+      <a href="dashboard.html"><span>Dashboard</span></a>
+      <a href="orders.html"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="menu.html"><span>Menu</span></a>
+      <a href="users.html" aria-current="page"><span>Registered users</span></a>
+      <a href="revenue.html"><span>Revenue report</span></a>
+    </nav>
+    <div class="bottom">
+      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
+      <a href="../index.html">View the shop</a>
+      <a href="../index.html" data-logout>Log out</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <div class="page-head">
+      <div>
+        <h1>Registered users</h1>
+        <p>Everyone who has created an account. Amount spent counts delivered orders only.</p>
+      </div>
+    </div>
+    <section class="panel">
+      <div class="toolbar">
+        <div class="tabs" role="tablist" aria-label="Filter by role" data-tabs-for="#usersTable" data-key="role"><button type="button" role="tab" data-filter="all" aria-selected="true">Everyone</button><button type="button" role="tab" data-filter="customer" aria-selected="false">Customers</button><button type="button" role="tab" data-filter="admin" aria-selected="false">Admins</button></div>
+        <input type="search" placeholder="Search name, email or phone" aria-label="Search users" data-search-for="#usersTable">
+      </div>
+      <div class="table-wrap">
+        <!-- GET /admin/users   Jinja: {% for u in users %}
+             SQL idea: users LEFT JOIN orders, COUNT(orders.id), SUM(total) WHERE status='Delivered' -->
+        <table class="data" id="usersTable">
+          <thead><tr><th>Name</th><th>Phone</th><th>Address</th><th>Joined</th><th class="num">Orders</th><th class="num">Spent</th><th>Last order</th></tr></thead>
+          <tbody>
+            <tr data-row data-role="admin">
+              <td><strong>Shop owner</strong> <span class="role">Admin</span><span class="sub">admin@crustandco.in</span></td>
+              <td>98765 43210</td>
+              <td>Shop 12, Main Market Road</td>
+              <td>1 Oct 2026</td>
+              <td class="num">0</td>
+              <td class="num">₹0</td>
+              <td><span class="hint">No orders yet</span></td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Rahul Sharma</strong><span class="sub">rahul@example.com</span></td>
+              <td>98100 23456</td>
+              <td>B-14, Green Park Extension</td>
+              <td>12 Oct 2026</td>
+              <td class="num">3</td>
+              <td class="num">₹409</td>
+              <td>Today</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Priya Nair</strong><span class="sub">priya.nair@example.com</span></td>
+              <td>98111 34567</td>
+              <td>C-7, Saket</td>
+              <td>20 Oct 2026</td>
+              <td class="num">1</td>
+              <td class="num">₹0</td>
+              <td>Today</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Arjun Mehta</strong><span class="sub">arjun.m@example.com</span></td>
+              <td>99100 45678</td>
+              <td>N-22, Hauz Khas</td>
+              <td>15 Oct 2026</td>
+              <td class="num">2</td>
+              <td class="num">₹399</td>
+              <td>Today</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Sneha Kapoor</strong><span class="sub">sneha.k@example.com</span></td>
+              <td>98730 56789</td>
+              <td>D-3, Malviya Nagar</td>
+              <td>18 Oct 2026</td>
+              <td class="num">2</td>
+              <td class="num">₹428</td>
+              <td>Today</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Vikram Singh</strong><span class="sub">vikram.s@example.com</span></td>
+              <td>97170 67890</td>
+              <td>II-M 12, Lajpat Nagar</td>
+              <td>22 Oct 2026</td>
+              <td class="num">1</td>
+              <td class="num">₹0</td>
+              <td>Today</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Ananya Iyer</strong><span class="sub">ananya.iyer@example.com</span></td>
+              <td>98990 78901</td>
+              <td>A-41, Defence Colony</td>
+              <td>25 Oct 2026</td>
+              <td class="num">1</td>
+              <td class="num">₹747</td>
+              <td>Today</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Karan Patel</strong><span class="sub">karan.p@example.com</span></td>
+              <td>99580 89012</td>
+              <td>Sector 18, Noida</td>
+              <td>28 Oct 2026</td>
+              <td class="num">1</td>
+              <td class="num">₹0</td>
+              <td>Today</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Meera Joshi</strong><span class="sub">meera.j@example.com</span></td>
+              <td>98180 90123</td>
+              <td>F-9, Kalkaji</td>
+              <td>30 Oct 2026</td>
+              <td class="num">1</td>
+              <td class="num">₹1,645</td>
+              <td>4 Nov</td>
+            </tr>
+            <tr data-row data-role="customer">
+              <td><strong>Rohan Das</strong><span class="sub">rohan.das@example.com</span></td>
+              <td>98710 01234</td>
+              <td>M-5, Greater Kailash</td>
+              <td>3 Nov 2026</td>
+              <td class="num">0</td>
+              <td class="num">₹0</td>
+              <td><span class="hint">No orders yet</span></td>
+            </tr>
+            <tr class="no-rows" hidden><td colspan="7">No users match your search.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="../../static/js/validate.js"></script>
+<script src="../../static/js/app.js"></script>
+<script src="../../static/js/admin.js"></script>
+</body>
+</html>

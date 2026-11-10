@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Crust & Co. admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
+<link rel="stylesheet" href="../../static/css/style.css">
+<link rel="stylesheet" href="../../static/css/admin.css">
+</head>
+<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
+<body class="admin" data-demo>
+<div class="shell">
+  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
+  <aside class="side">
+    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <nav aria-label="Admin">
+      <a href="dashboard.html" aria-current="page"><span>Dashboard</span></a>
+      <a href="orders.html"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="menu.html"><span>Menu</span></a>
+      <a href="users.html"><span>Registered users</span></a>
+      <a href="revenue.html"><span>Revenue report</span></a>
+    </nav>
+    <div class="bottom">
+      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
+      <a href="../index.html">View the shop</a>
+      <a href="../index.html" data-logout>Log out</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <div class="page-head">
+      <div>
+        <h1>Tonight at the shop</h1>
+        <p>Thursday, 5 November 2026. New orders need your approval before the kitchen starts.</p>
+      </div>
+      <a class="btn btn-secondary btn-sm" href="orders.html">See all orders</a>
+    </div>
+
+    <!-- Jinja needs: counts.pending, counts.active, counts.delivered_today, revenue_today -->
+    <div class="kpis">
+      <a class="kpi attention" href="orders.html?status=Pending"><div class="n" data-pending-count>2</div><div class="l">waiting for approval</div></a>
+      <div class="kpi"><div class="n">3</div><div class="l">being made or on the way</div></div>
+      <div class="kpi"><div class="n">1</div><div class="l">delivered today</div></div>
+      <div class="kpi"><div class="n">₹747</div><div class="l">cash collected today</div></div>
+    </div>
+
+    <section class="panel">
+      <h2>Waiting for your approval</h2>
+      <!-- Jinja: {% for order in pending_orders %} -->
+      <div class="queue" data-queue>
+        <article class="qcard" data-order-id="1048" data-status="Pending">
+          <header><h3>#1048 Rahul Sharma</h3><span class="when">8:41 pm</span></header>
+          <ul><li>2 × Paneer Tikka</li><li>1 × Garlic Bread</li></ul>
+          <div class="addr">B-14, Green Park Extension</div>
+          <div class="tot">₹947 cash on delivery</div>
+          <div class="acts">
+            <!-- POST /admin/orders/1048/status  status=Accepted -->
+            <form method="post" action="/admin/orders/1048/status" data-demo="status" data-order="1048">
+              <input type="hidden" name="status" value="Accepted">
+              <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+            </form>
+            <button class="btn btn-danger btn-sm" type="button" data-reject="1048" data-action="/admin/orders/1048/status">Reject</button>
+            <a class="btn btn-secondary btn-sm" href="order-detail.html">Details</a>
+          </div>
+        </article>
+        <article class="qcard" data-order-id="1047" data-status="Pending">
+          <header><h3>#1047 Priya Nair</h3><span class="when">8:36 pm</span></header>
+          <ul><li>1 × Margherita</li><li>1 × Cold Drink (500 ml)</li></ul>
+          <div class="addr">C-7, Saket</div>
+          <div class="tot">₹359 cash on delivery</div>
+          <div class="acts">
+            <!-- POST /admin/orders/1047/status  status=Accepted -->
+            <form method="post" action="/admin/orders/1047/status" data-demo="status" data-order="1047">
+              <input type="hidden" name="status" value="Accepted">
+              <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+            </form>
+            <button class="btn btn-danger btn-sm" type="button" data-reject="1047" data-action="/admin/orders/1047/status">Reject</button>
+            <a class="btn btn-secondary btn-sm" href="order-detail.html">Details</a>
+          </div>
+        </article>
+      </div>
+      <p class="empty-q" data-queue-empty hidden>No new orders right now. New ones appear here when you refresh.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>In progress</h2>
+        <span class="hint">Move each order to its next step</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data" id="activeTable">
+          <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th class="num">Total</th><th>Status</th><th class="actions">Next step</th></tr></thead>
+          <tbody>
+            <tr data-row data-order-id="1046" data-status="Accepted">
+              <td><a class="link" href="order-detail.html">#1046</a><span class="sub">8:22 pm</span></td>
+              <td>Arjun Mehta<span class="sub">99100 45678</span></td>
+              <td>1× Pepperoni, 1× Loaded Fries</td>
+              <td class="num">₹628</td>
+              <td><span class="status" data-status="Accepted">Accepted</span></td>
+              <td class="actions">
+                <form method="post" action="/admin/orders/1046/status" data-demo="status" data-order="1046" data-next-form>
+                  <input type="hidden" name="status" value="Preparing">
+                  <button class="btn btn-secondary btn-sm" type="submit">Start preparing</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1045" data-status="Preparing">
+              <td><a class="link" href="order-detail.html">#1045</a><span class="sub">8:10 pm</span></td>
+              <td>Sneha Kapoor<span class="sub">98730 56789</span></td>
+              <td>1× Four Cheese, 1× Farmhouse, 2× Cold Drink (500 ml)</td>
+              <td class="num">₹898</td>
+              <td><span class="status" data-status="Preparing">Preparing</span></td>
+              <td class="actions">
+                <form method="post" action="/admin/orders/1045/status" data-demo="status" data-order="1045" data-next-form>
+                  <input type="hidden" name="status" value="Out for delivery">
+                  <button class="btn btn-secondary btn-sm" type="submit">Send out for delivery</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1044" data-status="Out for delivery">
+              <td><a class="link" href="order-detail.html">#1044</a><span class="sub">7:55 pm</span></td>
+              <td>Vikram Singh<span class="sub">97170 67890</span></td>
+              <td>1× BBQ Chicken, 1× Chocolate Lava Cake</td>
+              <td class="num">₹598</td>
+              <td><span class="status" data-status="Out for delivery">Out for delivery</span></td>
+              <td class="actions">
+                <form method="post" action="/admin/orders/1044/status" data-demo="status" data-order="1044" data-next-form>
+                  <input type="hidden" name="status" value="Delivered">
+                  <button class="btn btn-secondary btn-sm" type="submit">Mark delivered</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Reject dialog. admin.js sets the form action from the button's data-action. -->
+<dialog class="modal" id="rejectDialog" aria-labelledby="rejectTitle">
+  <form method="post" action="" data-validate novalidate data-demo="status" data-order="">
+    <input type="hidden" name="status" value="Rejected">
+    <h2 id="rejectTitle" data-reject-title>Reject this order?</h2>
+    <p>The customer sees this reason on their My orders page.</p>
+    <div class="reasons">
+      <button type="button">Outside our delivery area</button>
+      <button type="button">An item in this order is sold out</button>
+      <button type="button">Kitchen is too busy right now</button>
+      <button type="button">Kitchen is closing for the night</button>
+    </div>
+    <div class="field">
+      <label for="reason">Reason</label>
+      <textarea id="reason" name="reason" required minlength="5" maxlength="200" style="min-height:80px"></textarea>
+      <div class="err">Give the customer a reason (at least 5 characters).</div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-secondary btn-sm" type="button" data-close-dialog>Keep order</button>
+      <button class="btn btn-tomato btn-sm" type="submit">Reject order</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="../../static/js/validate.js"></script>
+<script src="../../static/js/app.js"></script>
+<script src="../../static/js/admin.js"></script>
+</body>
+</html>

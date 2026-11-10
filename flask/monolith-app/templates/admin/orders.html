@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders — Crust & Co. admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
+<link rel="stylesheet" href="../../static/css/style.css">
+<link rel="stylesheet" href="../../static/css/admin.css">
+</head>
+<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
+<body class="admin" data-demo>
+<div class="shell">
+  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
+  <aside class="side">
+    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <nav aria-label="Admin">
+      <a href="dashboard.html"><span>Dashboard</span></a>
+      <a href="orders.html" aria-current="page"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="menu.html"><span>Menu</span></a>
+      <a href="users.html"><span>Registered users</span></a>
+      <a href="revenue.html"><span>Revenue report</span></a>
+    </nav>
+    <div class="bottom">
+      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
+      <a href="../index.html">View the shop</a>
+      <a href="../index.html" data-logout>Log out</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <div class="page-head">
+      <div>
+        <h1>Orders</h1>
+        <p>Every order placed on the website, newest first.</p>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="toolbar">
+        <!-- In Flask these can be links instead: /admin/orders?status=Pending -->
+        <div class="tabs" role="tablist" aria-label="Filter by status" data-tabs-for="#ordersTable" data-key="status"><button type="button" role="tab" data-filter="all" aria-selected="true">All</button><button type="button" role="tab" data-filter="Pending" aria-selected="false">Pending approval</button><button type="button" role="tab" data-filter="Accepted" aria-selected="false">Accepted</button><button type="button" role="tab" data-filter="Preparing" aria-selected="false">Preparing</button><button type="button" role="tab" data-filter="Out for delivery" aria-selected="false">Out for delivery</button><button type="button" role="tab" data-filter="Delivered" aria-selected="false">Delivered</button><button type="button" role="tab" data-filter="Rejected" aria-selected="false">Rejected</button></div>
+        <input type="search" placeholder="Search order, name or phone" aria-label="Search orders" data-search-for="#ordersTable">
+      </div>
+      <div class="table-wrap">
+        <!-- Jinja: {% for order in orders %} one <tr> per order {% endfor %} -->
+        <table class="data" id="ordersTable">
+          <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th class="num">Total</th><th>Status</th><th class="actions">Actions</th></tr></thead>
+          <tbody>
+            <tr data-row data-order-id="1048" data-status="Pending" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1048</a><span class="sub">Today, 8:41 pm</span></td>
+              <td>Rahul Sharma<span class="sub">98100 23456</span></td>
+              <td>2× Paneer Tikka, 1× Garlic Bread</td>
+              <td class="num">₹947</td>
+              <td><span class="status" data-status="Pending">Pending approval</span></td>
+              <td class="actions" data-actions>
+                <form method="post" action="/admin/orders/1048/status" data-demo="status" data-order="1048">
+                  <input type="hidden" name="status" value="Accepted">
+                  <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+                </form>
+                <button class="btn btn-danger btn-sm" type="button" data-reject="1048" data-action="/admin/orders/1048/status">Reject</button>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1047" data-status="Pending" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1047</a><span class="sub">Today, 8:36 pm</span></td>
+              <td>Priya Nair<span class="sub">98111 34567</span></td>
+              <td>1× Margherita, 1× Cold Drink (500 ml)</td>
+              <td class="num">₹359</td>
+              <td><span class="status" data-status="Pending">Pending approval</span></td>
+              <td class="actions" data-actions>
+                <form method="post" action="/admin/orders/1047/status" data-demo="status" data-order="1047">
+                  <input type="hidden" name="status" value="Accepted">
+                  <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+                </form>
+                <button class="btn btn-danger btn-sm" type="button" data-reject="1047" data-action="/admin/orders/1047/status">Reject</button>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1046" data-status="Accepted" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1046</a><span class="sub">Today, 8:22 pm</span></td>
+              <td>Arjun Mehta<span class="sub">99100 45678</span></td>
+              <td>1× Pepperoni, 1× Loaded Fries</td>
+              <td class="num">₹628</td>
+              <td><span class="status" data-status="Accepted">Accepted</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1045" data-status="Preparing" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1045</a><span class="sub">Today, 8:10 pm</span></td>
+              <td>Sneha Kapoor<span class="sub">98730 56789</span></td>
+              <td>1× Four Cheese, 1× Farmhouse, 2× Cold Drink (500 ml)</td>
+              <td class="num">₹898</td>
+              <td><span class="status" data-status="Preparing">Preparing</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1044" data-status="Out for delivery" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1044</a><span class="sub">Today, 7:55 pm</span></td>
+              <td>Vikram Singh<span class="sub">97170 67890</span></td>
+              <td>1× BBQ Chicken, 1× Chocolate Lava Cake</td>
+              <td class="num">₹598</td>
+              <td><span class="status" data-status="Out for delivery">Out for delivery</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1043" data-status="Delivered" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1043</a><span class="sub">Today, 7:20 pm</span></td>
+              <td>Ananya Iyer<span class="sub">98990 78901</span></td>
+              <td>2× Margherita, 1× Garlic Bread</td>
+              <td class="num">₹747</td>
+              <td><span class="status" data-status="Delivered">Delivered</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1042" data-status="Rejected" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1042</a><span class="sub">Today, 6:50 pm</span></td>
+              <td>Karan Patel<span class="sub">99580 89012</span></td>
+              <td>1× Chicken Keema</td>
+              <td class="num">₹479</td>
+              <td><span class="status" data-status="Rejected">Rejected</span><span class="sub">Outside our delivery area</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1041" data-status="Delivered" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1041</a><span class="sub">4 Nov, 9:05 pm</span></td>
+              <td>Rahul Sharma<span class="sub">98100 23456</span></td>
+              <td>1× Farmhouse, 1× Cold Drink (500 ml)</td>
+              <td class="num">₹409</td>
+              <td><span class="status" data-status="Delivered">Delivered</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1040" data-status="Delivered" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1040</a><span class="sub">4 Nov, 7:40 pm</span></td>
+              <td>Meera Joshi<span class="sub">98180 90123</span></td>
+              <td>3× Pepperoni, 2× Garlic Bread</td>
+              <td class="num">₹1,645</td>
+              <td><span class="status" data-status="Delivered">Delivered</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1039" data-status="Delivered" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1039</a><span class="sub">3 Nov, 8:15 pm</span></td>
+              <td>Arjun Mehta<span class="sub">99100 45678</span></td>
+              <td>1× Paneer Tikka</td>
+              <td class="num">₹399</td>
+              <td><span class="status" data-status="Delivered">Delivered</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr data-row data-order-id="1038" data-status="Delivered" data-href="order-detail.html">
+              <td><a class="link" href="order-detail.html">#1038</a><span class="sub">3 Nov, 1:10 pm</span></td>
+              <td>Sneha Kapoor<span class="sub">98730 56789</span></td>
+              <td>1× Margherita, 1× Chocolate Lava Cake</td>
+              <td class="num">₹428</td>
+              <td><span class="status" data-status="Delivered">Delivered</span></td>
+              <td class="actions" data-actions>
+                <a class="link" href="order-detail.html">View</a>
+              </td>
+            </tr>
+            <tr class="no-rows" hidden><td colspan="6">No orders match. Try another status or search.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination: /admin/orders?page=2 -->
+      <div class="toolbar" style="margin:1rem 0 0">
+        <span class="hint">Showing 11 of 48 orders</span>
+        <div style="display:flex;gap:.5rem">
+          <a class="btn btn-secondary btn-sm" aria-disabled="true" href="#">Newer</a>
+          <a class="btn btn-secondary btn-sm" href="orders.html?page=2">Older</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Reject dialog. admin.js sets the form action from the button's data-action. -->
+<dialog class="modal" id="rejectDialog" aria-labelledby="rejectTitle">
+  <form method="post" action="" data-validate novalidate data-demo="status" data-order="">
+    <input type="hidden" name="status" value="Rejected">
+    <h2 id="rejectTitle" data-reject-title>Reject this order?</h2>
+    <p>The customer sees this reason on their My orders page.</p>
+    <div class="reasons">
+      <button type="button">Outside our delivery area</button>
+      <button type="button">An item in this order is sold out</button>
+      <button type="button">Kitchen is too busy right now</button>
+      <button type="button">Kitchen is closing for the night</button>
+    </div>
+    <div class="field">
+      <label for="reason">Reason</label>
+      <textarea id="reason" name="reason" required minlength="5" maxlength="200" style="min-height:80px"></textarea>
+      <div class="err">Give the customer a reason (at least 5 characters).</div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-secondary btn-sm" type="button" data-close-dialog>Keep order</button>
+      <button class="btn btn-tomato btn-sm" type="submit">Reject order</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="../../static/js/validate.js"></script>
+<script src="../../static/js/app.js"></script>
+<script src="../../static/js/admin.js"></script>
+</body>
+</html>

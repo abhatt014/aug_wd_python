@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menu — Crust & Co. admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
+<link rel="stylesheet" href="../../static/css/style.css">
+<link rel="stylesheet" href="../../static/css/admin.css">
+</head>
+<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
+<body class="admin" data-demo>
+<div class="shell">
+  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
+  <aside class="side">
+    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <nav aria-label="Admin">
+      <a href="dashboard.html"><span>Dashboard</span></a>
+      <a href="orders.html"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="menu.html" aria-current="page"><span>Menu</span></a>
+      <a href="users.html"><span>Registered users</span></a>
+      <a href="revenue.html"><span>Revenue report</span></a>
+    </nav>
+    <div class="bottom">
+      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
+      <a href="../index.html">View the shop</a>
+      <a href="../index.html" data-logout>Log out</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+
+    <div class="page-head">
+      <div>
+        <h1>Menu</h1>
+        <p>What customers can order. Switch an item off when it runs out; it stays on the menu marked sold out.</p>
+      </div>
+      <a class="btn btn-tomato" href="menu-form.html?new=1">Add an item</a>
+    </div>
+    <section class="panel">
+      <div class="toolbar">
+        <div class="tabs" role="tablist" aria-label="Filter by category" data-tabs-for="#menuTable" data-key="category"><button type="button" role="tab" data-filter="all" aria-selected="true">Everything</button><button type="button" role="tab" data-filter="pizza" aria-selected="false">Pizzas</button><button type="button" role="tab" data-filter="sides" aria-selected="false">Sides & drinks</button></div>
+        <input type="search" placeholder="Search the menu" aria-label="Search the menu" data-search-for="#menuTable">
+      </div>
+      <div class="table-wrap">
+        <!-- GET /admin/menu   Jinja: {% for item in menu_items %} -->
+        <table class="data" id="menuTable">
+          <thead><tr><th>Item</th><th>Category</th><th class="num">Price</th><th>Available</th><th class="actions">Actions</th></tr></thead>
+          <tbody>
+            <tr data-row data-category="pizza" data-name="Margherita" data-avail="on">
+              <td><strong><span class="mark veg" title="Vegetarian"></span> Margherita</strong><span class="sub">San Marzano tomato, fresh mozzarella, basil</span></td>
+              <td>Pizza</td>
+              <td class="num">₹299</td>
+              <td>
+                <!-- POST /admin/menu/1/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/1/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Margherita on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/1/delete -->
+                <form method="post" action="/admin/menu/1/delete" data-confirm="Delete Margherita from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="pizza" data-name="Farmhouse" data-avail="on">
+              <td><strong><span class="mark veg" title="Vegetarian"></span> Farmhouse</strong><span class="sub">Capsicum, onion, mushroom, sweet corn</span></td>
+              <td>Pizza</td>
+              <td class="num">₹349</td>
+              <td>
+                <!-- POST /admin/menu/2/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/2/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Farmhouse on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/2/delete -->
+                <form method="post" action="/admin/menu/2/delete" data-confirm="Delete Farmhouse from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="pizza" data-name="Paneer Tikka" data-avail="on">
+              <td><strong><span class="mark veg" title="Vegetarian"></span> Paneer Tikka</strong> <span class="tag">Bestseller</span><span class="sub">Tandoori paneer, onion, green chilli, mint drizzle</span></td>
+              <td>Pizza</td>
+              <td class="num">₹399</td>
+              <td>
+                <!-- POST /admin/menu/3/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/3/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Paneer Tikka on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/3/delete -->
+                <form method="post" action="/admin/menu/3/delete" data-confirm="Delete Paneer Tikka from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="pizza" data-name="Four Cheese" data-avail="on">
+              <td><strong><span class="mark veg" title="Vegetarian"></span> Four Cheese</strong><span class="sub">Mozzarella, cheddar, parmesan, gorgonzola</span></td>
+              <td>Pizza</td>
+              <td class="num">₹429</td>
+              <td>
+                <!-- POST /admin/menu/4/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/4/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Four Cheese on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/4/delete -->
+                <form method="post" action="/admin/menu/4/delete" data-confirm="Delete Four Cheese from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="pizza" data-name="Pepperoni" data-avail="on">
+              <td><strong><span class="mark nonveg" title="Non-vegetarian"></span> Pepperoni</strong> <span class="tag">Bestseller</span><span class="sub">Chicken pepperoni, mozzarella, oregano</span></td>
+              <td>Pizza</td>
+              <td class="num">₹449</td>
+              <td>
+                <!-- POST /admin/menu/5/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/5/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Pepperoni on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/5/delete -->
+                <form method="post" action="/admin/menu/5/delete" data-confirm="Delete Pepperoni from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="pizza" data-name="BBQ Chicken" data-avail="on">
+              <td><strong><span class="mark nonveg" title="Non-vegetarian"></span> BBQ Chicken</strong><span class="sub">Smoky BBQ sauce, grilled chicken, red onion</span></td>
+              <td>Pizza</td>
+              <td class="num">₹469</td>
+              <td>
+                <!-- POST /admin/menu/6/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/6/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="BBQ Chicken on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/6/delete -->
+                <form method="post" action="/admin/menu/6/delete" data-confirm="Delete BBQ Chicken from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="pizza" data-name="Chicken Keema" data-avail="on">
+              <td><strong><span class="mark nonveg" title="Non-vegetarian"></span> Chicken Keema</strong> <span class="tag">Spicy</span><span class="sub">Spiced keema, jalapeño, coriander</span></td>
+              <td>Pizza</td>
+              <td class="num">₹479</td>
+              <td>
+                <!-- POST /admin/menu/7/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/7/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Chicken Keema on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/7/delete -->
+                <form method="post" action="/admin/menu/7/delete" data-confirm="Delete Chicken Keema from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="sides" data-name="Garlic Bread" data-avail="on">
+              <td><strong>Garlic Bread</strong><span class="sub">Four pieces with herb butter</span></td>
+              <td>Sides & drinks</td>
+              <td class="num">₹149</td>
+              <td>
+                <!-- POST /admin/menu/8/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/8/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Garlic Bread on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/8/delete -->
+                <form method="post" action="/admin/menu/8/delete" data-confirm="Delete Garlic Bread from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="sides" data-name="Loaded Fries" data-avail="on">
+              <td><strong>Loaded Fries</strong><span class="sub">Cheese sauce, peri-peri, spring onion</span></td>
+              <td>Sides & drinks</td>
+              <td class="num">₹179</td>
+              <td>
+                <!-- POST /admin/menu/9/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/9/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Loaded Fries on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/9/delete -->
+                <form method="post" action="/admin/menu/9/delete" data-confirm="Delete Loaded Fries from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="sides" data-name="Chocolate Lava Cake" data-avail="on">
+              <td><strong>Chocolate Lava Cake</strong><span class="sub">Warm, with a molten centre</span></td>
+              <td>Sides & drinks</td>
+              <td class="num">₹129</td>
+              <td>
+                <!-- POST /admin/menu/10/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/10/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Chocolate Lava Cake on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/10/delete -->
+                <form method="post" action="/admin/menu/10/delete" data-confirm="Delete Chocolate Lava Cake from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="sides" data-name="Cold Drink (500 ml)" data-avail="on">
+              <td><strong>Cold Drink (500 ml)</strong><span class="sub">Coke, Sprite or Fanta</span></td>
+              <td>Sides & drinks</td>
+              <td class="num">₹60</td>
+              <td>
+                <!-- POST /admin/menu/11/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/11/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" checked data-autosubmit aria-label="Cold Drink (500 ml) on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>On menu</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/11/delete -->
+                <form method="post" action="/admin/menu/11/delete" data-confirm="Delete Cold Drink (500 ml) from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr data-row data-category="sides" data-name="Tiramisu" data-avail="off">
+              <td><strong>Tiramisu</strong><span class="sub">Back tomorrow</span></td>
+              <td>Sides & drinks</td>
+              <td class="num">₹159</td>
+              <td>
+                <!-- POST /admin/menu/12/availability   available=1 when on (missing when off) -->
+                <form method="post" action="/admin/menu/12/availability" data-demo="availability" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1" data-autosubmit aria-label="Tiramisu on the menu"><span></span></label>
+                  <span class="hint" data-avail-label>Sold out</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="menu-form.html">Edit</a>
+                <!-- POST /admin/menu/12/delete -->
+                <form method="post" action="/admin/menu/12/delete" data-confirm="Delete Tiramisu from the menu?" data-demo="remove">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr class="no-rows" hidden><td colspan="5">No items match.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<dialog class="modal" id="confirmDialog" aria-labelledby="confirmText">
+  <form method="dialog">
+    <h2 id="confirmText" data-confirm-text>Are you sure?</h2>
+    <p>This can't be undone.</p>
+    <div class="acts">
+      <button class="btn btn-secondary btn-sm" type="button" data-close-dialog>Cancel</button>
+      <button class="btn btn-tomato btn-sm" type="button" data-confirm-yes>Delete</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="../../static/js/validate.js"></script>
+<script src="../../static/js/app.js"></script>
+<script src="../../static/js/admin.js"></script>
+</body>
+</html>

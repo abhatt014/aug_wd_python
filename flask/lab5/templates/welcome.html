@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Welcome {{ user }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI';
+            margin: 40px;
+            background-color: #f0f8ff;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #005a9c;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Hello, {{ user }}!</h1>
+        <p>Today is {{ curr_date }}.</p>
+    </div>
+</body>
+
+</html>

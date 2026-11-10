@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout — Crust & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body data-demo>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="index.html">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#menu">Menu</a>
+      <a href="contact.html">Contact</a>
+      <a href="my-orders.html" data-auth="customer">My orders</a>
+    </nav>
+    <div class="bar-right">
+      <a class="pill-btn light" href="login.html?next=checkout.html" data-auth="guest">Log in</a>
+      <span class="hello" data-auth="user">Hi, <span data-user-name>Rahul</span></span>
+      <a class="pill-btn light" href="index.html" data-auth="user" data-logout>Log out</a>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <h1>Almost there.</h1>
+    <p>Check your order and address. The shop confirms every order before it goes in the oven.</p>
+  </div>
+</section>
+
+<div class="wrap overlap">
+
+  <!-- Guests see this instead of the form.
+       In Flask, protect the /checkout route with @login_required and you can drop this block. -->
+  <div class="card gate" data-auth="guest" hidden>
+    <h2>Log in to place your order</h2>
+    <p>Only registered customers can order. Your cart is saved and will be waiting after you log in.</p>
+    <a class="btn btn-tomato" href="login.html?next=checkout.html">Log in</a>
+    <a class="btn btn-secondary" href="register.html?next=checkout.html">Create an account</a>
+  </div>
+
+  <div class="checkout-grid" data-auth="user">
+    <!-- POST /checkout
+         fields: name, phone, address, landmark, notes, payment_method (always "COD"),
+                 item_id (repeated), qty (repeated)
+         Flask: request.form.getlist("item_id"), request.form.getlist("qty")
+         Save the order with status = "Pending", then redirect to /order/<id>/placed -->
+    <form class="card" id="checkoutForm" action="/checkout" method="post" data-validate novalidate
+          data-demo="placeOrder" data-next="order-placed.html">
+      <h2>Delivery details</h2>
+      <p class="sub">We'll call this number if the rider can't find you.</p>
+
+      <div class="row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" autocomplete="name" required minlength="2" value="" data-user-fill="name">
+          <div class="err">Enter the name for this order.</div>
+        </div>
+        <div class="field">
+          <label for="phone">Mobile number</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" required
+                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" data-user-fill="phone">
+          <div class="err">Enter a 10-digit mobile number.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="address">Delivery address</label>
+        <textarea id="address" name="address" required minlength="10" maxlength="250" style="min-height:80px" data-user-fill="address"></textarea>
+        <div class="err">Enter your full address so we can deliver.</div>
+      </div>
+      <div class="field">
+        <label for="landmark">Landmark <span class="hint">(optional)</span></label>
+        <input type="text" id="landmark" name="landmark" maxlength="100" placeholder="Near the temple, blue gate">
+      </div>
+      <div class="field">
+        <label for="notes">Notes for the kitchen <span class="hint">(optional)</span></label>
+        <textarea id="notes" name="notes" maxlength="300" style="min-height:80px" placeholder="Less spicy, extra oregano, or a deal you want to use"></textarea>
+      </div>
+
+      <span class="label">Payment</span>
+      <input type="hidden" name="payment_method" value="COD">
+      <div class="cod">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg>
+        <div><strong>Cash on delivery</strong><span>Pay the rider when your pizza arrives. Keep change ready if you can.</span></div>
+      </div>
+
+      <!-- cart.js fills this with hidden item_id / qty inputs -->
+      <div id="cartInputs"></div>
+
+      <button class="btn btn-primary btn-block" type="submit">Place order</button>
+      <p class="note">Your order goes to the shop for approval. You can follow it on My orders.</p>
+    </form>
+
+    <aside class="card summary" aria-label="Order summary">
+      <h3>Your order</h3>
+      <div id="orderLines"></div>
+      <div class="sum-row" style="margin-top:.75rem"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+      <div class="sum-row"><span>Delivery</span><span>Free</span></div>
+      <div class="sum-row grand"><span>Pay on delivery</span><span id="grandTotal">₹0</span></div>
+      <p class="note"><a class="link" href="index.html#menu">Add more items</a></p>
+    </aside>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script src="../static/js/validate.js"></script>
+<script src="../static/js/app.js"></script>
+<script src="../static/js/cart.js"></script>
+</body>
+</html>

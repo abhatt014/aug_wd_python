@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crust & Co. ordering app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css">
+<style>
+  .screens { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin: 0 0 2.5rem; }
+  .screen { display: block; text-decoration: none; border: 2px solid var(--line); border-radius: 14px; padding: 1rem 1.1rem; background: var(--bg); }
+  .screen:hover { border-color: var(--tomato); }
+  .screen strong { display: block; font-size: 1.05rem; }
+  .screen span { color: var(--muted); font-size: .92rem; }
+  .screen code { display: block; margin-top: .5rem; font-size: .8rem; color: var(--tomato); }
+  h2.grp { font-size: 1.3rem; margin: 0 0 1rem; font-family: var(--body); color: var(--text); }
+  .as { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: 1.5rem; }
+  .as .now { color: #fff; font-weight: 600; margin-right: .5rem; }
+  .flow { counter-reset: f; list-style: none; padding: 0; margin: 0 0 2.5rem; display: grid; gap: .6rem; }
+  .flow li { counter-increment: f; display: grid; grid-template-columns: 2rem 1fr; gap: .75rem; align-items: baseline; }
+  .flow li::before { content: counter(f); font-weight: 700; color: var(--tomato); font-size: 1.1rem; }
+</style>
+</head>
+<body data-demo data-no-banner>
+
+<section class="band" style="padding-bottom:3rem">
+  <div class="wrap">
+    <h1>Pizza ordering app.</h1>
+    <p>Every screen of the Crust & Co. ordering system, ready to turn into Flask templates. Click any screen to try it. Nothing is sent to a server.</p>
+    <div class="as">
+      <span class="now">Try it as:</span>
+      <button class="btn btn-light btn-sm" type="button" data-as="guest">A visitor (logged out)</button>
+      <button class="btn btn-light btn-sm" type="button" data-as="customer">Rahul, a customer</button>
+      <button class="btn btn-light btn-sm" type="button" data-as="admin">The shop owner</button>
+    </div>
+    <p style="margin-top:.75rem;font-size:.95rem" id="who"></p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-block:2.5rem 4rem">
+  <h2 class="grp">Try the whole order</h2>
+  <ol class="flow">
+    <li><span>As a visitor, open <a class="link" href="templates/index.html">the home page</a>, add a few pizzas and press <strong>Go to checkout</strong>. You're asked to log in first.</span></li>
+    <li><span>Log in as <strong>rahul@example.com</strong> (any password of 6+ characters), check the address and press <strong>Place order</strong>.</span></li>
+    <li><span>Switch to the shop owner above (or log in as <strong>admin@crustandco.in</strong>). Open the <a class="link" href="templates/admin/dashboard.html">dashboard</a>, then accept or reject the new orders.</span></li>
+    <li><span>Open <a class="link" href="templates/admin/order-detail.html">order #1048</a> and move it through Preparing, Out for delivery and Delivered.</span></li>
+    <li><span>Download the <a class="link" href="templates/admin/revenue.html">revenue report</a> as CSV and open it in Excel.</span></li>
+  </ol>
+
+  <h2 class="grp">Customer pages</h2>
+  <div class="screens">
+    <a class="screen" href="templates/index.html"><strong>Home and menu</strong><span>Menu filter, cart drawer</span><code>GET /</code></a>
+    <a class="screen" href="templates/register.html"><strong>Register</strong><span>New customer account</span><code>GET, POST /register</code></a>
+    <a class="screen" href="templates/login.html"><strong>Log in</strong><span>Customers and the shop owner</span><code>GET, POST /login</code></a>
+    <a class="screen" href="templates/checkout.html"><strong>Checkout</strong><span>Address, cash on delivery, place order</span><code>GET, POST /checkout</code></a>
+    <a class="screen" href="templates/order-placed.html"><strong>Order placed</strong><span>Waiting for the shop's approval</span><code>GET /order/&lt;id&gt;/placed</code></a>
+    <a class="screen" href="templates/my-orders.html"><strong>My orders</strong><span>History and live status</span><code>GET /my-orders</code></a>
+    <a class="screen" href="templates/contact.html"><strong>Contact us</strong><span>Message form for the shop</span><code>GET, POST /contact</code></a>
+  </div>
+
+  <h2 class="grp">Admin pages</h2>
+  <div class="screens">
+    <a class="screen" href="templates/admin/dashboard.html"><strong>Dashboard</strong><span>New orders to approve, orders in progress</span><code>GET /admin</code></a>
+    <a class="screen" href="templates/admin/orders.html"><strong>All orders</strong><span>Filter by status, search, accept or reject</span><code>GET /admin/orders</code></a>
+    <a class="screen" href="templates/admin/order-detail.html"><strong>Order detail</strong><span>Process an order step by step</span><code>GET /admin/orders/&lt;id&gt;</code></a>
+    <a class="screen" href="templates/admin/users.html"><strong>Registered users</strong><span>Everyone with an account</span><code>GET /admin/users</code></a>
+    <a class="screen" href="templates/admin/menu.html"><strong>Menu</strong><span>Sold-out switch, edit, delete</span><code>GET /admin/menu</code></a>
+    <a class="screen" href="templates/admin/menu-form.html"><strong>Add or edit an item</strong><span>With a live preview</span><code>POST /admin/menu/new, /admin/menu/&lt;id&gt;/edit</code></a>
+    <a class="screen" href="templates/admin/revenue.html"><strong>Revenue report</strong><span>Date range, CSV downloads</span><code>GET /admin/revenue</code></a>
+  </div>
+
+  <p class="hint">Every form's fields and the data each page needs are listed in README.md.</p>
+</main>
+
+<script src="static/js/app.js"></script>
+<script>
+  // Demo helper for this launcher page only: pick who you are.
+  const PEOPLE = {
+    customer: { name: "Rahul Sharma", email: "rahul@example.com", phone: "98100 23456", address: "B-14, Green Park Extension, Your City – 110016", is_admin: false },
+    admin: { name: "Shop owner", email: "admin@crustandco.in", is_admin: true }
+  };
+  function showWho() {
+    const u = App.getUser();
+    document.getElementById("who").textContent = u ? `You're signed in as ${u.name}${u.is_admin ? " (admin)" : ""}.` : "You're browsing as a logged-out visitor.";
+  }
+  document.querySelectorAll("[data-as]").forEach(b => b.addEventListener("click", () => {
+    App.setUser(PEOPLE[b.dataset.as] || null);
+    showWho();
+    App.toast("Switched");
+  }));
+  showWho();
+</script>
+</body>
+</html>

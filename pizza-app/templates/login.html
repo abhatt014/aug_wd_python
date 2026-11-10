@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log in — Crust & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body data-demo>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="index.html">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#menu">Menu</a>
+      <a href="index.html#deals">Deals</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="bar-right">
+      <a class="pill-btn" href="checkout.html">Your order <span class="cart-count" data-cart-count>0</span></a>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="narrow">
+    <h1>Welcome back.</h1>
+    <p>Log in to place your order and follow it from the oven to your door.</p>
+  </div>
+</section>
+
+<div class="narrow overlap">
+  <div class="card">
+    <h2>Log in</h2>
+    <p class="sub">Shop staff use this page too.</p>
+
+    <!-- Flask flash messages go here:
+         {% with messages = get_flashed_messages(with_categories=true) %}
+           {% for category, msg in messages %}<div class="form-alert {{ category }}">{{ msg }}</div>{% endfor %}
+         {% endwith %} -->
+    <div class="form-alert error" hidden>That email and password don't match. Check them and try again.</div>
+
+    <!-- POST /login  fields: email, password, remember, next
+         On success: is_admin = 1 → redirect to /admin, otherwise to `next` or / -->
+    <form action="/login" method="post" data-validate novalidate data-demo="login">
+      <input type="hidden" name="next" value="">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required>
+        <div class="err">Enter the email you registered with.</div>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" name="password" autocomplete="current-password" required minlength="6">
+          <button class="pw-toggle" type="button" aria-label="Show password">Show</button>
+        </div>
+        <div class="err">Enter your password (at least 6 characters).</div>
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" name="remember" value="1"> Keep me logged in on this device</label>
+      </div>
+      <button class="btn btn-tomato btn-block" type="submit">Log in</button>
+    </form>
+
+    <p class="alt">New here? <a href="register.html" data-keep-next>Create an account</a></p>
+    <p class="form-alert ok" data-demo-only hidden style="margin-top:1rem;font-weight:500">
+      Demo: log in as <strong>admin@crustandco.in</strong> to open the admin dashboard, or <strong>rahul@example.com</strong> (or any email) as a customer. Any password of 6+ characters works.
+    </p>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script src="../static/js/validate.js"></script>
+<script src="../static/js/app.js"></script>
+<script src="../static/js/cart.js"></script>
+</body>
+</html>
