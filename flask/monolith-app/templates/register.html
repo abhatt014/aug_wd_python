@@ -43,7 +43,7 @@
 
     <!-- POST /register  fields: name, email, phone, address, password, confirm_password, terms, next
          Store a password HASH (werkzeug.security.generate_password_hash), never the password. -->
-    <form action="/register" method="post" data-validate novalidate data-demo="register">
+    <form action="/register" method="post" data-validate novalidate >
       <input type="hidden" name="next" value="">
       <div class="field">
         <label for="name">Full name</label>
