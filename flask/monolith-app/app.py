@@ -12,6 +12,10 @@ def get_db_connection():
 @app.route('/')
 def index():
     return render_template('index.html')
+@app.route('/login')    
+def login_form():
+    return render_template('login.html')
+    
 @app.route('/register')
 def register_form():
     return render_template('register.html')    
