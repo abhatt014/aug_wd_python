@@ -1,6 +1,8 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for,session
 import mysql.connector
+
 app = Flask(__name__)
+app.secret_key = 'aASDFG45ev3weFwes5ghER%^u'  
 def get_db_connection():
     return mysql.connector.connect(
         host='localhost',
@@ -12,9 +14,40 @@ def get_db_connection():
 @app.route('/')
 def index():
     return render_template('index.html')
+@app.route('/myorders')
+def my_orders():
+    #this is userdashboard page, where user can see his/her orders
+    #check for user session , if not logged in redirect to login page
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return redirect(url_for('login_form'))
+    else:    
+        return render_template('my-orders.html')    
 @app.route('/login')    
 def login_form():
     return render_template('login.html')
+@app.route('/processlogin', methods=['POST'])
+def process_login():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email, password))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if user:
+        # User exists, redirect to the appropriate page based on role
+        if user['role'] == 'admin':
+            return render_template('admin/admin-dashboard.html')
+        else:
+            #maintain user session
+            session['user_id'] = user['id']
+            return redirect(url_for('my_orders'))
+    else:
+        # Invalid credentials, show an error message
+        return render_template('login.html', error='Invalid email or password.')    
     
 @app.route('/register')
 def register_form():
