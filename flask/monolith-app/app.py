@@ -1,8 +1,24 @@
 from flask import Flask, request, render_template, redirect, url_for,session
 import mysql.connector
+from datetime import date, timedelta
+
+# DB status values, in order, and the labels shown under the tracker
+ORDER_STEPS = ['Pending approval', 'Accepted', 'Preparing', 'Out for delivery', 'Delivered']
+STEP_LABELS = ['Waiting for approval', 'Accepted', 'Preparing', 'Out for delivery', 'Delivered']
+
 
 app = Flask(__name__)
 app.secret_key = 'aASDFG45ev3weFwes5ghER%^u'  
+def friendly_time(dt):
+    """'Today, 8:41 pm' / 'Yesterday, 2:05 pm' / '12 Nov 2026, 7:30 pm'"""
+    t = dt.strftime('%I:%M %p').lstrip('0').lower()
+    today = date.today()
+    if dt.date() == today:
+        return f'Today, {t}'
+    if dt.date() == today - timedelta(days=1):
+        return f'Yesterday, {t}'
+    return f"{dt.strftime('%d %b %Y')}, {t}"
+
 def get_db_connection():
     return mysql.connector.connect(
         host='localhost',
@@ -14,16 +30,90 @@ def get_db_connection():
 @app.route('/')
 def index():
     return render_template('index.html')
-@app.route('/myorders')
-def my_orders():
-    #this is userdashboard page, where user can see his/her orders
-    #check for user session , if not logged in redirect to login page
+@app.route('/admin/users')
+def admin_users():
     user_id = session.get('user_id')
-
     if not user_id:
         return redirect(url_for('login_form'))
-    else:    
-        return render_template('my-orders.html')    
+    user_role = session.get('user_role')
+    if user_role == 'admin':
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM users')
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('admin/users.html', users=users)
+    else:
+        return redirect(url_for('index'))  # Redirect non-admin users to the index page    
+@app.route('/logout')
+def logout():
+    # Clear the user session
+    session.pop('user_id', None)
+    return redirect(url_for('index'))  
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login_form'))
+    user_role = session.get('user_role')
+    if user_role == 'admin':
+        return render_template('admin/dashboard.html')
+    else:
+        return redirect(url_for('index'))  # Redirect non-admin users to the index page
+
+@app.route('/myorders')
+def my_orders():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login_form'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('''
+        SELECT
+            o.id AS order_id,
+            o.order_number,
+            o.status,
+            o.total_amount,
+            o.created_at,
+            oi.item_name,
+            oi.quantity,
+            oi.unit_price,
+            (oi.quantity * oi.unit_price) AS item_total
+        FROM orders o
+        JOIN order_items oi ON o.id = oi.order_id
+        WHERE o.user_id = %s
+        ORDER BY o.created_at DESC, o.id, oi.id
+    ''', (user_id,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Group flat rows -> one dict per order with a list of its items
+    orders = {}
+    for row in rows:
+        oid = row['order_id']
+        if oid not in orders:
+            status = row['status']
+            orders[oid] = {
+                'order_number': row['order_number'],
+                'status': status,
+                'total_amount': row['total_amount'],
+                'placed_at': friendly_time(row['created_at']),
+                'step': ORDER_STEPS.index(status) if status in ORDER_STEPS else 0,
+                'line_items': [],
+            }
+        orders[oid]['line_items'].append({
+            'item_name': row['item_name'],
+            'quantity': row['quantity'],
+            'item_total': row['item_total'],
+        })
+
+    # dicts keep insertion order, so the ORDER BY (newest first) is preserved
+    return render_template('my-orders.html',
+                           orders=list(orders.values()),
+                           step_labels=STEP_LABELS)          
 @app.route('/login')    
 def login_form():
     return render_template('login.html')
@@ -40,10 +130,18 @@ def process_login():
     if user:
         # User exists, redirect to the appropriate page based on role
         if user['role'] == 'admin':
-            return render_template('admin/admin-dashboard.html')
+            #maintain user session
+            session['user_id'] = user['id']
+            #store user name in session for greeting
+            session['user_name'] = user['name']
+            #store user role in session for greeting
+            session['user_role'] = user['role']
+            return redirect(url_for('admin_dashboard'))
         else:
             #maintain user session
             session['user_id'] = user['id']
+            #store user name in session for greeting
+            session['user_name'] = user['name']
             return redirect(url_for('my_orders'))
     else:
         # Invalid credentials, show an error message

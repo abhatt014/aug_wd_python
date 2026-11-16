@@ -12,22 +12,22 @@
 <link rel="stylesheet" href="../../static/css/admin.css">
 </head>
 <!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
-<body class="admin" data-demo>
+<body class="admin" >
 <div class="shell">
   <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
   <aside class="side">
-    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
+    <a class="logo" href="/admin/dashboard">Crust & Co.<small>Shop admin</small></a>
     <nav aria-label="Admin">
-      <a href="dashboard.html" aria-current="page"><span>Dashboard</span></a>
-      <a href="orders.html"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
-      <a href="menu.html"><span>Menu</span></a>
-      <a href="users.html"><span>Registered users</span></a>
-      <a href="revenue.html"><span>Revenue report</span></a>
+      <a href="/admin/dashboard" aria-current="page"><span>Dashboard</span></a>
+      <a href="/admin/orders"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
+      <a href="/admin/menu"><span>Menu</span></a>
+      <a href="/admin/users"><span>Registered users</span></a>
+      <a href="/admin/revenue"><span>Revenue report</span></a>
     </nav>
     <div class="bottom">
       <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
-      <a href="../index.html">View the shop</a>
-      <a href="../index.html" data-logout>Log out</a>
+      <a href="/">View the shop</a>
+      <a href="/logout" data-logout>Log out</a>
     </div>
   </aside>
 
@@ -51,7 +51,7 @@
 
     <section class="panel">
       <h2>Waiting for your approval</h2>
-      <!-- Jinja: {% for order in pending_orders %} -->
+   
       <div class="queue" data-queue>
         <article class="qcard" data-order-id="1048" data-status="Pending">
           <header><h3>#1048 Rahul Sharma</h3><span class="when">8:41 pm</span></header>
