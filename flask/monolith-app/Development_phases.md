@@ -29,6 +29,8 @@ Phases 2 to 7 were checked on 2026-11-17 against the real MySQL database: the 8-
 - Seeded phone numbers fixed to valid 10-digit numbers: `demo` 9856547520 (also on sample order #1049), `admin` 9123456789.
 - `backup.sql` replaced with a `mysqldump` of the live database. It now holds the verification data: customer `verify.customer@example.com`, order #1050 (Delivered), and sample order #1049 (Rejected). The `demo` and `admin` passwords are now stored as hashes; they are still `123456`.
 
+- New admin page `/admin/messages` (sidebar: Messages) lists contact-form messages, newest first, 25 per page, with a search box that filters the current page. Admin only; guests go to login, customers to the home page.
+
 ## Phase details
 
 ### 0. Analysis (done)

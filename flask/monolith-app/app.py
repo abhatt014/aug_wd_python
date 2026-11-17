@@ -35,6 +35,7 @@ MENU_TYPES = ('veg', 'nonveg')
 MENU_TAGS = ('Bestseller', 'Spicy', 'New')
 
 ORDERS_PER_PAGE = 25
+MESSAGES_PER_PAGE = 25
 MAX_QTY_PER_ITEM = 20
 
 app = Flask(__name__)
@@ -493,6 +494,24 @@ def admin_users():
         cursor.execute('SELECT id, name, email, phone, address, role, timestamp FROM users ORDER BY id')
         users = cursor.fetchall()
     return render_template('admin/users.html', users=users)
+
+
+@app.route('/admin/messages')
+@admin_required
+def admin_messages():
+    """Messages sent through the contact form, newest first."""
+    page = max(request.args.get('page', 1, type=int), 1)
+    with db_cursor() as cursor:
+        cursor.execute('SELECT COUNT(*) AS n FROM messages')
+        total = cursor.fetchone()['n']
+        cursor.execute('SELECT id, name, phone, email, message, created_at FROM messages '
+                       'ORDER BY created_at DESC, id DESC LIMIT %s OFFSET %s',
+                       (MESSAGES_PER_PAGE, (page - 1) * MESSAGES_PER_PAGE))
+        messages = cursor.fetchall()
+    for m in messages:
+        m['sent_at'] = friendly_time(m['created_at'])
+    return render_template('admin/messages.html', messages=messages, total=total, page=page,
+                           has_older=page * MESSAGES_PER_PAGE < total)
 
 
 # ---------------------------------------------------------------------------

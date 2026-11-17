@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Messages — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
+</head>
+<body class="admin">
+<div class="shell">
+  {% set nav = 'messages' %}
+  {% include 'admin/_sidebar.html' %}
+
+  <main class="main-area">
+
+    <div class="page-head">
+      <div>
+        <h1>Messages</h1>
+        <p>What customers sent through the contact form, newest first.</p>
+      </div>
+    </div>
+    <section class="panel">
+      <div class="toolbar">
+        <input type="search" placeholder="Search name, email, phone or message" aria-label="Search messages" data-search-for="#messagesTable">
+      </div>
+      <div class="table-wrap">
+        <table class="data" id="messagesTable">
+          <thead><tr><th>From</th><th>Message</th><th>Received</th></tr></thead>
+          <tbody>
+            {% for m in messages %}
+            <tr data-row>
+              <td><strong>{{ m.name }}</strong><span class="sub">{{ m.email }}</span>{% if m.phone %}<span class="sub">{{ m.phone }}</span>{% endif %}</td>
+              <td style="white-space:pre-line;max-width:40rem">{{ m.message }}</td>
+              <td style="white-space:nowrap">{{ m.sent_at }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="no-rows"{% if messages %} hidden{% endif %}><td colspan="3">{% if total %}No messages match your search.{% else %}No messages yet.{% endif %}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="toolbar" style="margin:1rem 0 0">
+        <span class="hint">Showing {{ messages|length }} of {{ total }} messages</span>
+        <div style="display:flex;gap:.5rem">
+          <a class="btn btn-secondary btn-sm"{% if page > 1 %} href="{{ url_for('admin_messages', page=page - 1) }}"{% else %} aria-disabled="true"{% endif %}>Newer</a>
+          <a class="btn btn-secondary btn-sm"{% if has_older %} href="{{ url_for('admin_messages', page=page + 1) }}"{% else %} aria-disabled="true"{% endif %}>Older</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+{% include 'admin/_scripts.html' %}
+</body>
+</html>

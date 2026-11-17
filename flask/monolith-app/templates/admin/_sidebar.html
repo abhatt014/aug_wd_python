@@ -8,6 +8,7 @@
     <a href="{{ url_for('admin_orders') }}"{% if nav == 'orders' %} aria-current="page"{% endif %}><span>Orders</span><span class="badge"{% if not waiting %} hidden{% endif %}>{{ waiting }}</span></a>
     <a href="{{ url_for('admin_menu') }}"{% if nav == 'menu' %} aria-current="page"{% endif %}><span>Menu</span></a>
     <a href="{{ url_for('admin_users') }}"{% if nav == 'users' %} aria-current="page"{% endif %}><span>Registered users</span></a>
+    <a href="{{ url_for('admin_messages') }}"{% if nav == 'messages' %} aria-current="page"{% endif %}><span>Messages</span></a>
     <a href="{{ url_for('admin_revenue') }}"{% if nav == 'revenue' %} aria-current="page"{% endif %}><span>Revenue report</span></a>
   </nav>
   <div class="bottom">
