@@ -1,0 +1,4 @@
+{# One-off messages set in app.py with flash('text', 'ok') or flash('text', 'error') #}
+{% for category, message in get_flashed_messages(with_categories=true) %}
+<div class="form-alert {{ 'error' if category == 'error' else 'ok' }}" role="status">{{ message }}</div>
+{% endfor %}

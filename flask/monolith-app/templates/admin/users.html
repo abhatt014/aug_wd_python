@@ -1,42 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Registered users — Crust & Co. admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
-<link rel="stylesheet" href="../../static/css/style.css">
-<link rel="stylesheet" href="../../static/css/admin.css">
+{% set admin = true %}
+{% include '_head.html' %}
 </head>
-<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
-<body class="admin" >
+<body class="admin">
 <div class="shell">
-  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
-  <aside class="side">
-    <a class="logo" href="/admin/dashboard">Crust & Co.<small>Shop admin</small></a>
-    <nav aria-label="Admin">
-      <a href="/admin/dashboard"><span>Dashboard</span></a>
-      <a href="/admin/orders"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
-      <a href="/admin/menu"><span>Menu</span></a>
-      <a href="/admin/users" aria-current="page"><span>Registered users</span></a>
-      <a href="/admin/revenue"><span>Revenue report</span></a>
-    </nav>
-    <div class="bottom">
-      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
-      <a href="/index.html">View the shop</a>
-      <a href="/index.html" data-logout>Log out</a>
-    </div>
-  </aside>
+  {% set nav = 'users' %}
+  {% include 'admin/_sidebar.html' %}
 
   <main class="main-area">
 
     <div class="page-head">
       <div>
         <h1>Registered users</h1>
-        <p>Everyone who has created an account. Amount spent counts delivered orders only.</p>
+        <p>Everyone who has created an account.</p>
       </div>
     </div>
     <section class="panel">
@@ -54,12 +33,12 @@
               <td><strong>{{ user.name }}</strong> <span class="role">{{ user.role }}</span><span class="sub">{{ user.email }}</span></td>
               <td>{{ user.phone }}</td>
               <td>{{ user.address }}</td>
-              <td>{{ user.timestamp }}</td>
+              <td>{{ user.timestamp.strftime('%d %b %Y') if user.timestamp else '' }}</td>
             </tr>
             {% endfor %}
             
 
-            <tr class="no-rows" hidden><td colspan="7">No users match your search.</td></tr>
+            <tr class="no-rows" hidden><td colspan="4">No users match your search.</td></tr>
           </tbody>
         </table>
       </div>
@@ -67,8 +46,6 @@
   </main>
 </div>
 
-<script src="../../static/js/validate.js"></script>
-<script src="../../static/js/app.js"></script>
-<script src="../../static/js/admin.js"></script>
+{% include 'admin/_scripts.html' %}
 </body>
 </html>

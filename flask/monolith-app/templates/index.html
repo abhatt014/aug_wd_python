@@ -1,41 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Crust & Co. — Wood-fired pizza</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% include '_head.html' %}
 </head>
-<!-- Remove data-demo when this page is served by Flask -->
 <body>
 
-<!-- ===== HEADER (move to base.html) ===== -->
-<header class="bar">
-  <div class="wrap">
-    <a class="logo" href="/">Crust & Co.</a>
-    <nav class="links" aria-label="Main">
-      <a href="#menu">Menu</a>
-      <a href="#deals">Deals</a>
-      <a href="/contact">Contact</a>
-      <a href="/myorders">My Orders</a>
-    </nav>
-    <div class="bar-right">
-      <a class="pill-btn light" href="/login">Log in</a>
-      <button class="pill-btn" id="cartBtn" type="button" aria-label="Open your order">
-        Your order <span class="cart-count" data-cart-count>0</span>
-      </button>
-    </div>
-  </div>
-</header>
+{% set page = 'index' %}
+{% include '_header.html' %}
 <nav class="mobile-nav" aria-label="Main (mobile)">
   <div class="wrap">
-    <a href="#menu">Menu</a><a href="#deals">Deals</a><a href="contact.html">Contact</a>
-    <a href="my-orders.html" data-auth="customer">My orders</a>
-    <a href="admin/dashboard.html" data-auth="admin">Admin</a>
-    <a href="register.html" data-auth="guest">Register</a>
+    <a href="#menu">Menu</a><a href="#deals">Deals</a><a href="{{ url_for('contact') }}">Contact</a>
+    {% if session.user_role == 'admin' %}
+    <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+    {% elif session.user_id %}
+    <a href="{{ url_for('my_orders') }}">My orders</a>
+    {% else %}
+    <a href="{{ url_for('register_form') }}">Register</a>
+    {% endif %}
   </div>
 </nav>
 
@@ -46,7 +28,9 @@
         <h1>Hot from the oven in 90 seconds.</h1>
         <p>Hand-stretched dough rested for 48 hours, fired at 450°C, and brought to your door. Pay cash when it arrives.</p>
         <a class="btn btn-light" href="#menu">Start your order</a>
-        <a class="btn btn-ghost" href="/register" data-auth="guest">Create an account</a>
+        {% if not session.user_id %}
+        <a class="btn btn-ghost" href="{{ url_for('register_form') }}">Create an account</a>
+        {% endif %}
       </div>
       <svg class="pizza" viewBox="0 0 200 200" aria-hidden="true">
         <circle cx="100" cy="100" r="96" fill="#E8A33D"/>
@@ -82,75 +66,18 @@
         <button class="chip" type="button" aria-pressed="false" data-filter="sides">Sides & drinks</button>
       </div>
 
-  
       <div class="menu">
-        <div class="item" data-id="1" data-name="Margherita" data-price="299" data-type="veg" data-category="pizza">
-          <h3><span class="mark veg" title="Vegetarian"></span>Margherita</h3>
-          <span class="price">₹299</span>
-          <p>San Marzano tomato, fresh mozzarella, basil</p>
-          <button class="add" type="button">Add</button>
+        {% for item in menu_items %}
+        <div class="item{% if not item.available %} sold-out{% endif %}" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price|int }}" data-type="{{ item.type }}" data-category="{{ item.category }}">
+          <h3>{% if item.category == 'pizza' %}<span class="mark {{ item.type }}" title="{{ 'Non-vegetarian' if item.type == 'nonveg' else 'Vegetarian' }}"></span>{% endif %}{{ item.name }}
+            {%- if not item.available %} <span class="tag">Sold out</span>{% elif item.tag %} <span class="tag">{{ item.tag }}</span>{% endif %}</h3>
+          <span class="price">{{ item.price|rupee }}</span>
+          <p>{{ item.description }}</p>
+          <button class="add" type="button"{% if not item.available %} disabled{% endif %}>Add</button>
         </div>
-        <div class="item" data-id="2" data-name="Farmhouse" data-price="349" data-type="veg" data-category="pizza">
-          <h3><span class="mark veg" title="Vegetarian"></span>Farmhouse</h3>
-          <span class="price">₹349</span>
-          <p>Capsicum, onion, mushroom, sweet corn</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="3" data-name="Paneer Tikka" data-price="399" data-type="veg" data-category="pizza">
-          <h3><span class="mark veg" title="Vegetarian"></span>Paneer Tikka <span class="tag">Bestseller</span></h3>
-          <span class="price">₹399</span>
-          <p>Tandoori paneer, onion, green chilli, mint drizzle</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="4" data-name="Four Cheese" data-price="429" data-type="veg" data-category="pizza">
-          <h3><span class="mark veg" title="Vegetarian"></span>Four Cheese</h3>
-          <span class="price">₹429</span>
-          <p>Mozzarella, cheddar, parmesan, gorgonzola</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="5" data-name="Pepperoni" data-price="449" data-type="nonveg" data-category="pizza">
-          <h3><span class="mark nonveg" title="Non-vegetarian"></span>Pepperoni <span class="tag">Bestseller</span></h3>
-          <span class="price">₹449</span>
-          <p>Chicken pepperoni, mozzarella, oregano</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="6" data-name="BBQ Chicken" data-price="469" data-type="nonveg" data-category="pizza">
-          <h3><span class="mark nonveg" title="Non-vegetarian"></span>BBQ Chicken</h3>
-          <span class="price">₹469</span>
-          <p>Smoky BBQ sauce, grilled chicken, red onion</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="7" data-name="Chicken Keema" data-price="479" data-type="nonveg" data-category="pizza">
-          <h3><span class="mark nonveg" title="Non-vegetarian"></span>Chicken Keema <span class="tag">Spicy</span></h3>
-          <span class="price">₹479</span>
-          <p>Spiced keema, jalapeño, coriander</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="8" data-name="Garlic Bread" data-price="149" data-type="veg" data-category="sides">
-          <h3>Garlic Bread</h3>
-          <span class="price">₹149</span>
-          <p>Four pieces with herb butter</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="9" data-name="Loaded Fries" data-price="179" data-type="veg" data-category="sides">
-          <h3>Loaded Fries</h3>
-          <span class="price">₹179</span>
-          <p>Cheese sauce, peri-peri, spring onion</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="10" data-name="Chocolate Lava Cake" data-price="129" data-type="veg" data-category="sides">
-          <h3>Chocolate Lava Cake</h3>
-          <span class="price">₹129</span>
-          <p>Warm, with a molten centre</p>
-          <button class="add" type="button">Add</button>
-        </div>
-        <div class="item" data-id="11" data-name="Cold Drink (500 ml)" data-price="60" data-type="veg" data-category="sides">
-          <h3>Cold Drink (500 ml)</h3>
-          <span class="price">₹60</span>
-          <p>Coke, Sprite or Fanta</p>
-          <button class="add" type="button">Add</button>
-        </div>
-   
+        {% else %}
+        <p class="lead">The menu is being updated. Please check back in a few minutes.</p>
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -186,20 +113,12 @@
           <p><strong>Crust & Co.</strong></p>
           <p>Shop 12, Main Market Road<br>Your City – 110001</p>
           <p><a href="tel:+919876543210">+91 98765 43210</a></p>
-          <p><a href="contact.html">Send us a message</a></p>
+          <p><a href="{{ url_for('contact') }}">Send us a message</a></p>
         </div>
       </div>
     </div>
   </section>
 </main>
-
-<!-- ===== FOOTER (move to base.html) ===== -->
-<footer class="foot">
-  <div class="wrap">
-    <span class="logo">Crust & Co.</span>
-    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
-  </div>
-</footer>
 
 <!-- ===== CART DRAWER ===== -->
 <div class="scrim" id="scrim"></div>
@@ -212,13 +131,11 @@
   <div class="drawer-foot">
     <div class="total"><span>Total</span><span id="drawerTotal">₹0</span></div>
 
-    <a class="btn btn-primary btn-block" id="checkoutBtn" href="#">Go to checkout</a>
+    <a class="btn btn-primary btn-block" id="checkoutBtn" href="{{ url_for('checkout') }}">Go to checkout</a>
     <p class="note">You'll need to log in to place the order. Cash on delivery only.</p>
   </div>
 </aside>
 
-<script src="{{ url_for('static', filename='js/validate.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-<script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+{% include '_footer.html' %}
 </body>
 </html>

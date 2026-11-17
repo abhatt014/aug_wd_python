@@ -1,0 +1,24 @@
+{# Reject dialog. admin.js opens it from any  <button data-reject="1049" data-action="/admin/orders/3/status">
+   and copies data-action into the form's action. #}
+<dialog class="modal" id="rejectDialog" aria-labelledby="rejectTitle">
+  <form method="post" action="" data-validate novalidate>
+    <input type="hidden" name="status" value="Rejected">
+    <h2 id="rejectTitle" data-reject-title>Reject this order?</h2>
+    <p>The customer sees this reason on their My orders page.</p>
+    <div class="reasons">
+      <button type="button">Outside our delivery area</button>
+      <button type="button">An item in this order is sold out</button>
+      <button type="button">Kitchen is too busy right now</button>
+      <button type="button">Kitchen is closing for the night</button>
+    </div>
+    <div class="field">
+      <label for="reason">Reason</label>
+      <textarea id="reason" name="reason" required minlength="5" maxlength="200" style="min-height:80px"></textarea>
+      <div class="err">Give the customer a reason (at least 5 characters).</div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-secondary btn-sm" type="button" data-close-dialog>Keep order</button>
+      <button class="btn btn-tomato btn-sm" type="submit">Reject order</button>
+    </div>
+  </form>
+</dialog>

@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Contact Crust & Co.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../static/css/style.css">
+{% include '_head.html' %}
 <style>
   /* Page-only: hide the form once it's sent */
   .done { display: none; text-align: center; padding: 2rem 0 1rem; }
@@ -17,26 +12,10 @@
   .sent form, .sent > h2, .sent > .sub { display: none; }
 </style>
 </head>
-<body data-demo>
+<body>
 
-<header class="bar">
-  <div class="wrap">
-    <a class="logo" href="index.html">Crust & Co.</a>
-    <nav class="links" aria-label="Main">
-      <a href="index.html#menu">Menu</a>
-      <a href="index.html#deals">Deals</a>
-      <a href="contact.html" aria-current="page">Contact</a>
-      <a href="my-orders.html" data-auth="customer">My orders</a>
-      <a href="admin/dashboard.html" data-auth="admin">Admin</a>
-    </nav>
-    <div class="bar-right">
-      <a class="pill-btn light" href="login.html" data-auth="guest">Log in</a>
-      <span class="hello" data-auth="user">Hi, <span data-user-name>Rahul</span></span>
-      <a class="pill-btn light" href="index.html" data-auth="user" data-logout>Log out</a>
-      <a class="pill-btn" href="checkout.html">Your order <span class="cart-count" data-cart-count>0</span></a>
-    </div>
-  </div>
-</header>
+{% set page = 'contact' %}
+{% include '_header.html' %}
 
 <section class="band">
   <div class="wrap">
@@ -76,29 +55,31 @@
     <h2>Send us a message</h2>
     <p class="sub">It goes straight to the shop. We'll reply on the phone number you give.</p>
 
-    <!-- POST /contact
-         fields: topic, name, phone, email, event_date, guests, message
-         event_date and guests are only filled for "Party / bulk order" -->
-    <form id="contactForm" action="/processmessage" method="post" data-validate novalidate >
+    {% if error %}
+    <div class="form-alert error">{{ error }}</div>
+    {% endif %}
+
+    <!-- POST /processmessage   fields: name, phone, email, message -->
+    <form id="contactForm" action="{{ url_for('process_message') }}" method="post" data-validate novalidate>
 
 
       <div class="row">
         <div class="field">
           <label for="name">Your name</label>
-          <input type="text" id="name" name="name" autocomplete="name" required minlength="2" data-user-fill="name">
+          <input type="text" id="name" name="name" autocomplete="name" required minlength="2" value="{{ form.name or '' }}">
           <div class="err">Enter your name so we know who we're talking to.</div>
         </div>
         <div class="field">
           <label for="phone">Phone number</label>
           <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="98765 43210" required
-                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" data-user-fill="phone">
+                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" value="{{ form.phone or '' }}">
           <div class="err">Enter a 10-digit mobile number.</div>
         </div>
       </div>
 
       <div class="field">
         <label for="email">Email <span class="hint">(optional)</span></label>
-        <input type="email" id="email" name="email" autocomplete="email" data-user-fill="email">
+        <input type="email" id="email" name="email" autocomplete="email" value="{{ form.email or '' }}">
         <div class="err">That email doesn't look right. Check it or leave it blank.</div>
       </div>
 
@@ -106,8 +87,8 @@
 
       <div class="field">
         <label for="message">Message</label>
-        <textarea id="message" name="message" maxlength="600" minlength="10" required placeholder="Tell us what happened or what you need. For an order, include the order number."></textarea>
-        <div class="counter"><span id="count">0</span> / 600</div>
+        <textarea id="message" name="message" maxlength="600" minlength="10" required placeholder="Tell us what happened or what you need. For an order, include the order number.">{{ form.message or '' }}</textarea>
+        <div class="counter"><span id="count">{{ (form.message or '')|length }}</span> / 600</div>
         <div class="err">Write a short message (at least 10 characters).</div>
       </div>
 
@@ -146,15 +127,7 @@
   </div>
 </section>
 
-<footer class="foot">
-  <div class="wrap">
-    <span class="logo">Crust & Co.</span>
-    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
-  </div>
-</footer>
-
-<script src="../static/js/validate.js"></script>
-<script src="../static/js/app.js"></script>
-<script src="../static/js/cart.js"></script>
+{% include '_footer.html' %}
+<script src="{{ url_for('static', filename='js/contact.js') }}"></script>
 </body>
 </html>

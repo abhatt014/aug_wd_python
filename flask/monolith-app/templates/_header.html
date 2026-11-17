@@ -1,0 +1,34 @@
+{# Shop header, shared by every customer page.
+   Set `page` before including it:  {% set page = 'index' %}{% include '_header.html' %}
+   page = 'index' shows the cart drawer button, page = 'checkout' hides the cart link. #}
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="{{ url_for('index') }}">Crust & Co.</a>
+    <nav class="links" aria-label="Main">
+      <a href="{{ url_for('index') }}#menu">Menu</a>
+      <a href="{{ url_for('index') }}#deals">Deals</a>
+      <a href="{{ url_for('contact') }}"{% if page == 'contact' %} aria-current="page"{% endif %}>Contact</a>
+      {% if session.user_id %}
+      <a href="{{ url_for('my_orders') }}"{% if page == 'my-orders' %} aria-current="page"{% endif %}>My orders</a>
+      {% endif %}
+      {% if session.user_role == 'admin' %}
+      <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+      {% endif %}
+    </nav>
+    <div class="bar-right">
+      {% if session.user_id %}
+      <span class="hello">Hi, {{ session.user_name }}</span>
+      <a class="pill-btn light" href="{{ url_for('logout') }}">Log out</a>
+      {% else %}
+      <a class="pill-btn light" href="{{ url_for('login_form') }}">Log in</a>
+      {% endif %}
+      {% if page == 'index' %}
+      <button class="pill-btn" id="cartBtn" type="button" aria-label="Open your order">
+        Your order <span class="cart-count" data-cart-count>0</span>
+      </button>
+      {% elif page != 'checkout' %}
+      <a class="pill-btn" href="{{ url_for('checkout') }}">Your order <span class="cart-count" data-cart-count>0</span></a>
+      {% endif %}
+    </div>
+  </div>
+</header>

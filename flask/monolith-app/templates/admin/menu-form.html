@@ -1,108 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Edit menu item — Crust & Co. admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- Flask: {{ url_for('static', filename='css/style.css') }} and css/admin.css -->
-<link rel="stylesheet" href="../../static/css/style.css">
-<link rel="stylesheet" href="../../static/css/admin.css">
+<title>{{ 'Edit menu item' if item and item.id else 'Add a menu item' }} — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
 </head>
-<!-- Remove data-demo when served by Flask. Protect every /admin route with an admin_required check. -->
-<body class="admin" data-demo>
+<body class="admin">
 <div class="shell">
-  <!-- ===== SIDEBAR (move to admin/base.html) ===== -->
-  <aside class="side">
-    <a class="logo" href="dashboard.html">Crust & Co.<small>Shop admin</small></a>
-    <nav aria-label="Admin">
-      <a href="dashboard.html"><span>Dashboard</span></a>
-      <a href="orders.html"><span>Orders</span><span class="badge" data-pending-count>2</span></a>
-      <a href="menu.html" aria-current="page"><span>Menu</span></a>
-      <a href="users.html"><span>Registered users</span></a>
-      <a href="revenue.html"><span>Revenue report</span></a>
-    </nav>
-    <div class="bottom">
-      <span class="who">Signed in as <span data-user-name>Shop owner</span></span>
-      <a href="../index.html">View the shop</a>
-      <a href="../index.html" data-logout>Log out</a>
-    </div>
-  </aside>
+  {% set nav = 'menu' %}
+  {% include 'admin/_sidebar.html' %}
 
   <main class="main-area">
 
-    <a class="back" href="menu.html">← Menu</a>
+    <a class="back" href="{{ url_for('admin_menu') }}">← Menu</a>
     <div class="page-head">
       <div>
-        <!-- Jinja: {% if item %}Edit {{ item.name }}{% else %}Add an item{% endif %} -->
-        <h1>Edit Paneer Tikka</h1>
+        <h1>{% if item and item.id %}Edit {{ item.name }}{% else %}Add an item{% endif %}</h1>
         <p>Changes show on the website as soon as you save.</p>
       </div>
     </div>
 
+    {# A new item starts as a veg pizza that is on the menu #}
+    {% set it = item or {'category': 'pizza', 'type': 'veg', 'available': 1} %}
     <div class="detail-grid">
       <!-- Add:  POST /admin/menu/new
            Edit: POST /admin/menu/<item_id>/edit
            fields: name, description, category (pizza | sides), type (veg | nonveg), price, tag, available -->
-      <form class="panel" id="itemForm" action="/admin/menu/3/edit" method="post" data-validate novalidate
-            data-demo="saveItem" data-next="menu.html">
+      <form class="panel" id="itemForm" action="{{ action }}" method="post" data-validate novalidate>
+        {% if error %}
+        <div class="form-alert error">{{ error }}</div>
+        {% endif %}
         <div class="field">
           <label for="name">Name</label>
-          <input type="text" id="name" name="name" required minlength="2" maxlength="60" value="Paneer Tikka">
+          <input type="text" id="name" name="name" required minlength="2" maxlength="60" value="{{ it.name or '' }}">
           <div class="err">Give the item a name.</div>
         </div>
         <div class="field">
           <label for="description">Description</label>
-          <textarea id="description" name="description" maxlength="120" required style="min-height:80px">Tandoori paneer, onion, green chilli, mint drizzle</textarea>
+          <textarea id="description" name="description" maxlength="120" required style="min-height:80px">{{ it.description or '' }}</textarea>
           <div class="err">Add a short description (what's on it).</div>
         </div>
         <div class="row">
           <div class="field">
             <label for="category">Category</label>
             <select id="category" name="category" required>
-              <option value="pizza" selected>Pizza</option>
-              <option value="sides">Sides & drinks</option>
+              {% for value, label in categories.items() %}
+              <option value="{{ value }}"{% if it.category == value %} selected{% endif %}>{{ label }}</option>
+              {% endfor %}
             </select>
           </div>
           <div class="field">
             <label for="price">Price (₹)</label>
-            <input type="number" id="price" name="price" required min="1" max="5000" step="1" value="399">
+            <input type="number" id="price" name="price" required min="1" max="5000" step="1" value="{{ it.price|int if it.price else '' }}">
             <div class="err">Enter a price between ₹1 and ₹5,000.</div>
           </div>
         </div>
         <div class="row">
           <fieldset class="field" style="border:0;padding:0;margin:0 0 1rem">
             <legend class="label">Veg or non-veg</legend>
-            <label class="check"><input type="radio" name="type" value="veg" checked> Vegetarian</label>
-            <label class="check" style="margin-top:.4rem"><input type="radio" name="type" value="nonveg"> Non-vegetarian</label>
+            <label class="check"><input type="radio" name="type" value="veg"{% if it.type != 'nonveg' %} checked{% endif %}> Vegetarian</label>
+            <label class="check" style="margin-top:.4rem"><input type="radio" name="type" value="nonveg"{% if it.type == 'nonveg' %} checked{% endif %}> Non-vegetarian</label>
           </fieldset>
           <div class="field">
             <label for="tag">Label <span class="hint">(optional)</span></label>
             <select id="tag" name="tag">
               <option value="">None</option>
-              <option value="Bestseller" selected>Bestseller</option>
-              <option value="Spicy">Spicy</option>
-              <option value="New">New</option>
+              {% for tag in tags %}
+              <option value="{{ tag }}"{% if it.tag == tag %} selected{% endif %}>{{ tag }}</option>
+              {% endfor %}
             </select>
           </div>
         </div>
         <div class="field">
-          <label class="check"><input type="checkbox" name="available" value="1" checked> On the menu and available to order</label>
+          <label class="check"><input type="checkbox" name="available" value="1"{% if it.available %} checked{% endif %}> On the menu and available to order</label>
         </div>
         <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem">
           <button class="btn btn-tomato" type="submit">Save item</button>
-          <a class="btn btn-secondary" href="menu.html">Cancel</a>
+          <a class="btn btn-secondary" href="{{ url_for('admin_menu') }}">Cancel</a>
         </div>
       </form>
 
+      <!-- admin.js keeps this preview in step with the form as you type -->
       <aside class="panel">
         <h2>How customers see it</h2>
         <div class="item" id="itemPreview" style="border:0;padding:0">
-          <h3><span class="mark veg" data-p-mark></span><span data-p-name>Paneer Tikka</span> <span class="tag" data-p-tag>Bestseller</span></h3>
-          <span class="price" data-p-price>₹399</span>
-          <p data-p-desc>Tandoori paneer, onion, green chilli, mint drizzle</p>
+          <h3><span class="mark veg" data-p-mark></span><span data-p-name>Item name</span> <span class="tag" data-p-tag></span></h3>
+          <span class="price" data-p-price>₹0</span>
+          <p data-p-desc>Short description</p>
           <button class="add" type="button" tabindex="-1" aria-hidden="true">Add</button>
         </div>
       </aside>
@@ -110,8 +94,6 @@
   </main>
 </div>
 
-<script src="../../static/js/validate.js"></script>
-<script src="../../static/js/app.js"></script>
-<script src="../../static/js/admin.js"></script>
+{% include 'admin/_scripts.html' %}
 </body>
 </html>

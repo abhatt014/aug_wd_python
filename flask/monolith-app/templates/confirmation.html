@@ -1,58 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact Crust & Co.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../static/css/style.css">
-<style>
-  /* Page-only: hide the form once it's sent */
-  .done { display: none; text-align: center; padding: 2rem 0 1rem; }
-  .done h3 { font-family: var(--display); font-weight: 400; font-size: 1.9rem; color: var(--basil); margin: .5rem 0; }
-  .done p { color: var(--muted); max-width: 40ch; margin: 0 auto 1.25rem; }
-  .sent .done { display: block; }
-  .sent form, .sent > h2, .sent > .sub { display: none; }
-</style>
+<title>Thank you — Crust & Co.</title>
+{% include '_head.html' %}
 </head>
-<body data-demo>
+<body>
 
-<header class="bar">
-  <div class="wrap">
-    <a class="logo" href="index.html">Crust & Co.</a>
-
-
-  </div>
-</header>
+{% set page = 'confirmation' %}
+{% include '_header.html' %}
 
 <section class="band">
   <div class="wrap">
-    {%if name %}
+    {% if name %}
     <h1>Hello {{ name }}, your message has been sent.</h1>
-    <p>Click <a href="/">here</a> to go back to the home page.</p>
-    {%endif%}
-    {%if newuser %}
-    <h1>Welcome, {{ newuser }}!</h1>
-    <p>Thank you for creating an account with us.</p>
+    <p>We usually reply within 30 minutes during opening hours.</p>
+    <p><a class="btn btn-light" href="{{ url_for('index') }}">Back to the home page</a></p>
     {% endif %}
-    
+    {% if newuser %}
+    <h1>Welcome, {{ newuser }}!</h1>
+    <p>Thank you for creating an account with us. Log in to place your first order.</p>
+    <p><a class="btn btn-light" href="{{ url_for('login_form', next=next) }}">Log in</a></p>
+    {% endif %}
   </div>
 </section>
 
-
-
-<footer class="foot">
-  <div class="wrap">
-    <span class="logo">Crust & Co.</span>
-    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
-  </div>
-</footer>
-
-<script src="../static/js/validate.js"></script>
-<script src="../static/js/app.js"></script>
-<script src="../static/js/cart.js"></script>
-<script src="../static/js/contact.js"></script>
+{% include '_footer.html' %}
 </body>
 </html>

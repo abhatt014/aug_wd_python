@@ -1,30 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Create an account — Crust & Co.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../static/css/style.css">
+{% include '_head.html' %}
 </head>
-<body data-demo>
+<body>
 
-  <header class="bar">
-    <div class="wrap">
-      <a class="logo" href="/">Crust & Co.</a>
-      <nav class="links" aria-label="Main">
-        <a href="/#menu">Menu</a>
-        <a href="/#deals">Deals</a>
-        <a href="/contact">Contact</a>
-      </nav>
-      <div class="bar-right">
-        <a class="pill-btn light" href="/login">Log in</a>
-        <a class="pill-btn" href="/checkout">Your order <span class="cart-count" data-cart-count>0</span></a>
-      </div>
-    </div>
-  </header>
+{% set page = 'register' %}
+{% include '_header.html' %}
 
 <section class="band">
   <div class="narrow">
@@ -39,33 +22,34 @@
     <p class="sub">All fields are needed so the rider can reach you.</p>
 
     {% if error %}
-    <div class="form-alert error" >{{ error }}</div>
+    <div class="form-alert error">{{ error }}</div>
     {% endif %}
 
-    <!-- POST /register  fields: name, email, phone, address, password, confirm_password, terms, next
-         Store a password HASH (werkzeug.security.generate_password_hash), never the password. -->
-    <form action="/processregistration" method="post" data-validate novalidate >
-      <input type="hidden" name="next" value="">
+    <!-- POST /processregistration  fields: name, email, phone, address, password, confirm_password, terms, next
+         app.py stores a password HASH, never the password. -->
+    <form action="{{ url_for('register') }}" method="post" data-validate novalidate>
+      <input type="hidden" name="next" value="{{ next or '' }}">
       <div class="field">
         <label for="name">Full name</label>
-        <input type="text" id="name" name="name" autocomplete="name" required minlength="2" maxlength="80">
+        <input type="text" id="name" name="name" autocomplete="name" required minlength="2" maxlength="80" value="{{ form.name or '' }}">
         <div class="err">Enter your name.</div>
       </div>
       <div class="row">
         <div class="field">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" autocomplete="email" required maxlength="120">
+          <input type="email" id="email" name="email" autocomplete="email" required maxlength="100" value="{{ form.email or '' }}">
           <div class="err">Enter a valid email, like name@example.com.</div>
         </div>
         <div class="field">
           <label for="phone">Mobile number</label>
-          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="98765 43210">
+          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="98765 43210" required
+                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" value="{{ form.phone or '' }}">
           <div class="err">Enter a 10-digit mobile number.</div>
         </div>
       </div>
       <div class="field">
         <label for="address">Delivery address</label>
-        <textarea id="address" name="address" autocomplete="street-address" required minlength="10" maxlength="250" style="min-height:80px" placeholder="House number, street, area, city and PIN"></textarea>
+        <textarea id="address" name="address" autocomplete="street-address" required minlength="10" maxlength="100" style="min-height:80px" placeholder="House number, street, area, city and PIN">{{ form.address or '' }}</textarea>
         <div class="err">Enter your full address so we can deliver.</div>
       </div>
       <div class="row">
@@ -90,19 +74,10 @@
       <button class="btn btn-tomato btn-block" type="submit">Create account</button>
     </form>
 
-    <p class="alt">Already registered? <a href="login.html" data-keep-next>Log in</a></p>
+    <p class="alt">Already registered? <a href="{{ url_for('login_form', next=next) }}">Log in</a></p>
   </div>
 </div>
 
-<footer class="foot">
-  <div class="wrap">
-    <span class="logo">Crust & Co.</span>
-    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
-  </div>
-</footer>
-
-<script src="../static/js/validate.js"></script>
-<script src="../static/js/app.js"></script>
-<script src="../static/js/cart.js"></script>
+{% include '_footer.html' %}
 </body>
 </html>

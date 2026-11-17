@@ -18,6 +18,8 @@
   const KEY = "crust_cart";
 
   let cart = store.get(KEY, {}); // { "3": {id, name, price, qty}, ... }
+  // Flask adds data-clear-cart to <body> on the page shown right after an order is placed.
+  if (document.body.hasAttribute("data-clear-cart")) { cart = {}; store.set(KEY, cart); }
   const save = () => { store.set(KEY, cart); render(); };
   const lines = () => Object.values(cart).filter(l => l.qty > 0);
   const count = () => lines().reduce((s, l) => s + l.qty, 0);
@@ -67,7 +69,7 @@
     if (form) {
       const has = lines().length > 0;
       document.getElementById("orderLines").innerHTML = has ? linesHtml()
-        : `<p class="empty">Your cart is empty. <a class="link" href="index.html#menu">Go to the menu</a> to add pizzas.</p>`;
+        : `<p class="empty">Your cart is empty. <a class="link" href="/#menu">Go to the menu</a> to add pizzas.</p>`;
       document.getElementById("subtotal").textContent = rupee(subtotal());
       document.getElementById("grandTotal").textContent = rupee(subtotal());
       // Hidden inputs that Flask reads

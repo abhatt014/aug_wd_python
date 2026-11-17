@@ -1,31 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My orders — Crust & Co.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../static/css/style.css">
+{% include '_head.html' %}
 </head>
-<body >
+<body>
 
-<header class="bar">
-  <div class="wrap">
-    <a class="logo" href="/">Crust & Co.</a>
-    <nav class="links" aria-label="Main">
-      <a href="/">Menu</a>
-      <a href="/contact">Contact</a>
-      <a href="/myorders" aria-current="page">My orders</a>
-    </nav>
-    <div class="bar-right">
-      <span class="hello" data-auth="user">Hi, <span data-user-name>{{session.get('user_name')}}</span></span>
-      <a class="pill-btn light" href="/logout" data-auth="user" data-logout>Log out</a>
-      <a class="pill-btn" href="checkout.html">Your order <span class="cart-count" data-cart-count>0</span></a>
-    </div>
-  </div>
-</header>
+{% set page = 'my-orders' %}
+{% include '_header.html' %}
 
 <section class="band">
   <div class="wrap">
@@ -35,15 +17,6 @@
 </section>
 
 <div class="wrap overlap" style="max-width:820px">
-
-  <div class="card gate" data-auth="guest" hidden>
-    <h2>Log in to see your orders</h2>
-    <p>Your order history is saved to your account.</p>
-    <a class="btn btn-tomato" href="login.html?next=my-orders.html">Log in</a>
-  </div>
-
-
-<div data-auth="user">
   <div class="card">
     {% for order in orders %}
     <article class="order-card">
@@ -52,49 +25,38 @@
           <h3>Order #{{ order.order_number }}</h3>
           <p class="order-meta">{{ order.placed_at }}</p>
         </div>
-        <span class="status" data-status="{{ order.status | lower | replace(' ', '-') }}">
-          {{ order.status }}
-        </span>
+        <span class="status" data-status="{{ order.status|status_key }}">{{ order.status }}</span>
       </div>
 
-      <ol class="tracker">
+      {% if order.step >= 0 %}
+      <ol class="tracker" aria-label="Order progress">
         {% for label in step_labels %}
-        <li class="{% if loop.index0 < order.step %}done{% elif loop.index0 == order.step %}current{% endif %}">
-          <span class="dot"></span>
-          <span class="label">{{ label }}</span>
-        </li>
+        <li class="{% if loop.index0 < order.step %}done{% elif loop.index0 == order.step %}now{% endif %}">{{ label }}</li>
         {% endfor %}
       </ol>
+      {% elif order.status == 'Rejected' %}
+      <p class="reason">The shop could not take this order{% if order.reject_reason %}: {{ order.reject_reason }}{% endif %}. Nothing was charged.</p>
+      {% endif %}
 
       <ul class="order-items">
         {% for item in order.line_items %}
         <li>
           <span>{{ item.quantity }} × {{ item.item_name }}</span>
-          <span>₹{{ "{:,.0f}".format(item.item_total) }}</span>
+          <span>{{ item.item_total|rupee }}</span>
         </li>
         {% endfor %}
         <li class="tot">
           <span>Total</span>
-          <span>₹{{ "{:,.0f}".format(order.total_amount) }}</span>
+          <span>{{ order.total_amount|rupee }}</span>
         </li>
       </ul>
     </article>
     {% else %}
-    <p class="order-meta">You haven't placed any orders yet.</p>
+    <p class="order-meta">You haven't placed any orders yet. <a class="link" href="{{ url_for('index') }}#menu">See the menu</a></p>
     {% endfor %}
   </div>
 </div>
-</div>
 
-<footer class="foot">
-  <div class="wrap">
-    <span class="logo">Crust & Co.</span>
-    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
-  </div>
-</footer>
-
-<script src="../static/js/validate.js"></script>
-<script src="../static/js/app.js"></script>
-<script src="../static/js/cart.js"></script>
+{% include '_footer.html' %}
 </body>
 </html>
