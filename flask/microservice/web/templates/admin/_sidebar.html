@@ -1,0 +1,19 @@
+{# Admin sidebar, shared by every admin page.
+   Set `nav` before including it:  {% set nav = 'orders' %}{% include 'admin/_sidebar.html' %} #}
+{% set waiting = pending_count() %}
+<aside class="side">
+  <a class="logo" href="{{ url_for('admin_dashboard') }}">Crust & Co.<small>Shop admin</small></a>
+  <nav aria-label="Admin">
+    <a href="{{ url_for('admin_dashboard') }}"{% if nav == 'dashboard' %} aria-current="page"{% endif %}><span>Dashboard</span></a>
+    <a href="{{ url_for('admin_orders') }}"{% if nav == 'orders' %} aria-current="page"{% endif %}><span>Orders</span><span class="badge"{% if not waiting %} hidden{% endif %}>{{ waiting }}</span></a>
+    <a href="{{ url_for('admin_menu') }}"{% if nav == 'menu' %} aria-current="page"{% endif %}><span>Menu</span></a>
+    <a href="{{ url_for('admin_users') }}"{% if nav == 'users' %} aria-current="page"{% endif %}><span>Registered users</span></a>
+    <a href="{{ url_for('admin_messages') }}"{% if nav == 'messages' %} aria-current="page"{% endif %}><span>Messages</span></a>
+    <a href="{{ url_for('admin_revenue') }}"{% if nav == 'revenue' %} aria-current="page"{% endif %}><span>Revenue report</span></a>
+  </nav>
+  <div class="bottom">
+    <span class="who">Signed in as {{ session.user_name }}</span>
+    <a href="{{ url_for('index') }}">View the shop</a>
+    <a href="{{ url_for('logout') }}">Log out</a>
+  </div>
+</aside>

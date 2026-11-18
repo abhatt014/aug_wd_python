@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Order placed — Crust & Co.</title>
+{% include '_head.html' %}
+</head>
+<!-- data-clear-cart is set once, right after checkout: cart.js then empties the browser cart -->
+<body{% if clear_cart %} data-clear-cart{% endif %}>
+
+{% set page = 'order-placed' %}
+{% include '_header.html' %}
+
+<section class="band">
+  <div class="narrow">
+    <h1>Order sent to the shop.</h1>
+    <p>We'll accept it within a few minutes. My orders shows the latest status.</p>
+  </div>
+</section>
+
+<div class="narrow overlap">
+  <div class="card">
+    <svg class="big-check" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="none" stroke="var(--basil)" stroke-width="4"/><path d="m22 37 10 10 18-20" fill="none" stroke="var(--basil)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h2 class="center">Order #{{ order.order_number }}</h2>
+    <p class="sub center"><span class="status" data-status="{{ order.status|status_key }}">{{ order.status }}</span></p>
+
+    <ol class="tracker" aria-label="Order progress">
+      {% for label in step_labels %}
+      <li class="{% if loop.index0 < order.step %}done{% elif loop.index0 == order.step %}now{% endif %}">{{ label }}</li>
+      {% endfor %}
+    </ol>
+
+    <h3>What you ordered</h3>
+    <ul class="order-items">
+      {% for item in order.line_items %}
+      <li><span>{{ item.quantity }} × {{ item.item_name }}</span><span>{{ item.item_total|rupee }}</span></li>
+      {% endfor %}
+      <li class="tot"><span>Total (cash on delivery)</span><span>{{ order.total_amount|rupee }}</span></li>
+    </ul>
+
+    <p class="order-meta" style="margin-top:1rem"><strong>Delivering to:</strong> {{ order.address }}{% if order.landmark %} ({{ order.landmark }}){% endif %}</p>
+    <p class="order-meta">If the shop can't take the order, you'll see the reason on My orders and nothing is charged.</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem">
+      <a class="btn btn-primary" href="{{ url_for('my_orders') }}">Track my order</a>
+      <a class="btn btn-secondary" href="{{ url_for('index') }}#menu">Back to the menu</a>
+    </div>
+  </div>
+</div>
+
+{% include '_footer.html' %}
+</body>
+</html>

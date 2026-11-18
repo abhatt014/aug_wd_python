@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Log in — Crust & Co.</title>
+{% include '_head.html' %}
+</head>
+<body>
+
+{% set page = 'login' %}
+{% include '_header.html' %}
+
+<section class="band">
+  <div class="narrow">
+    <h1>Welcome back.</h1>
+    <p>Log in to place your order and follow it from the oven to your door.</p>
+  </div>
+</section>
+
+<div class="narrow overlap">
+  <div class="card">
+    <h2>Log in</h2>
+    <p class="sub">Shop staff use this page too.</p>
+    {% if error %}
+    <div class="form-alert error">{{ error }}</div>
+    {% endif %}
+    <!-- POST /processlogin  fields: email, password, remember, next
+         On success: admins go to /admin/dashboard, customers to `next` or /myorders -->
+    <form action="{{ url_for('process_login') }}" method="post" data-validate novalidate>
+      <input type="hidden" name="next" value="{{ next or '' }}">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required>
+        <div class="err">Enter the email you registered with.</div>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
+          <button class="pw-toggle" type="button" aria-label="Show password">Show</button>
+        </div>
+        <div class="err">Enter your password.</div>
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" name="remember" value="1"> Keep me logged in on this device</label>
+      </div>
+      <button class="btn btn-tomato btn-block" type="submit">Log in</button>
+    </form>
+
+    <p class="alt">New here? <a href="{{ url_for('register_form', next=next) }}">Create an account</a></p>
+  </div>
+</div>
+
+{% include '_footer.html' %}
+</body>
+</html>

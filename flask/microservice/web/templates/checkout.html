@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Checkout — Crust & Co.</title>
+{% include '_head.html' %}
+</head>
+<body>
+
+{% set page = 'checkout' %}
+{% include '_header.html' %}
+
+<section class="band">
+  <div class="wrap">
+    <h1>Almost there.</h1>
+    <p>Check your order and address. The shop confirms every order before it goes in the oven.</p>
+  </div>
+</section>
+
+<div class="wrap overlap">
+  <div class="checkout-grid">
+    <!-- POST /checkout
+         fields: name, phone, address, landmark, notes, item_id (repeated), qty (repeated)
+         app.py looks the prices up again in menu_items; nothing here is trusted. -->
+    <form class="card" id="checkoutForm" action="{{ url_for('checkout') }}" method="post" data-validate novalidate>
+      <h2>Delivery details</h2>
+      <p class="sub">We'll call this number if the rider can't find you.</p>
+
+      {% if error %}
+      <div class="form-alert error">{{ error }}</div>
+      {% endif %}
+
+      <div class="row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" autocomplete="name" required minlength="2" maxlength="100" value="{{ form.name or '' }}">
+          <div class="err">Enter the name for this order.</div>
+        </div>
+        <div class="field">
+          <label for="phone">Mobile number</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" required
+                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" value="{{ form.phone or '' }}">
+          <div class="err">Enter a 10-digit mobile number.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="address">Delivery address</label>
+        <textarea id="address" name="address" required minlength="10" maxlength="250" style="min-height:80px">{{ form.address or '' }}</textarea>
+        <div class="err">Enter your full address so we can deliver.</div>
+      </div>
+      <div class="field">
+        <label for="landmark">Landmark <span class="hint">(optional)</span></label>
+        <input type="text" id="landmark" name="landmark" maxlength="100" placeholder="Near the temple, blue gate" value="{{ form.landmark or '' }}">
+      </div>
+      <div class="field">
+        <label for="notes">Notes for the kitchen <span class="hint">(optional)</span></label>
+        <textarea id="notes" name="notes" maxlength="255" style="min-height:80px" placeholder="Less spicy, extra oregano, or a deal you want to use">{{ form.notes or '' }}</textarea>
+      </div>
+
+      <span class="label">Payment</span>
+      <div class="cod">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg>
+        <div><strong>Cash on delivery</strong><span>Pay the rider when your pizza arrives. Keep change ready if you can.</span></div>
+      </div>
+
+      <!-- cart.js fills this with hidden item_id / qty inputs -->
+      <div id="cartInputs"></div>
+
+      <button class="btn btn-primary btn-block" type="submit">Place order</button>
+      <p class="note">Your order goes to the shop for approval. You can follow it on My orders.</p>
+    </form>
+
+    <aside class="card summary" aria-label="Order summary">
+      <h3>Your order</h3>
+      <div id="orderLines"></div>
+      <div class="sum-row" style="margin-top:.75rem"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+      <div class="sum-row"><span>Delivery</span><span>Free</span></div>
+      <div class="sum-row grand"><span>Pay on delivery</span><span id="grandTotal">₹0</span></div>
+      <p class="note"><a class="link" href="{{ url_for('index') }}#menu">Add more items</a></p>
+    </aside>
+  </div>
+</div>
+
+{% include '_footer.html' %}
+</body>
+</html>

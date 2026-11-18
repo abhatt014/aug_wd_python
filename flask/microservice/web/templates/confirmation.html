@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Thank you — Crust & Co.</title>
+{% include '_head.html' %}
+</head>
+<body>
+
+{% set page = 'confirmation' %}
+{% include '_header.html' %}
+
+<section class="band">
+  <div class="wrap">
+    {% if name %}
+    <h1>Hello {{ name }}, your message has been sent.</h1>
+    <p>We usually reply within 30 minutes during opening hours.</p>
+    <p><a class="btn btn-light" href="{{ url_for('index') }}">Back to the home page</a></p>
+    {% endif %}
+    {% if newuser %}
+    <h1>Welcome, {{ newuser }}!</h1>
+    <p>Thank you for creating an account with us. Log in to place your first order.</p>
+    <p><a class="btn btn-light" href="{{ url_for('login_form', next=next) }}">Log in</a></p>
+    {% endif %}
+  </div>
+</section>
+
+{% include '_footer.html' %}
+</body>
+</html>

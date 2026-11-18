@@ -1,0 +1,11 @@
+{# Shop footer + scripts, shared by every customer page. validate.js must load before app.js. #}
+<footer class="foot">
+  <div class="wrap">
+    <span class="logo">Crust & Co.</span>
+    <span>© <span data-year>2026</span> Crust & Co. All prices include taxes.</span>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/validate.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cart.js') }}"></script>

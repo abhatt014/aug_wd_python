@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Registered users — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
+</head>
+<body class="admin">
+<div class="shell">
+  {% set nav = 'users' %}
+  {% include 'admin/_sidebar.html' %}
+
+  <main class="main-area">
+
+    <div class="page-head">
+      <div>
+        <h1>Registered users</h1>
+        <p>Everyone who has created an account.</p>
+      </div>
+    </div>
+    <section class="panel">
+      <div class="toolbar">
+        <div class="tabs" role="tablist" aria-label="Filter by role" data-tabs-for="#usersTable" data-key="role"><button type="button" role="tab" data-filter="all" aria-selected="true">Everyone</button><button type="button" role="tab" data-filter="customer" aria-selected="false">Customers</button><button type="button" role="tab" data-filter="admin" aria-selected="false">Admins</button></div>
+        <input type="search" placeholder="Search name, email or phone" aria-label="Search users" data-search-for="#usersTable">
+      </div>
+      <div class="table-wrap">
+       
+        <table class="data" id="usersTable">
+          <thead><tr><th>Name</th><th>Phone</th><th>Address</th><th>Joined</th></tr></thead>
+          <tbody>
+            {% for user in users %}
+            <tr data-row data-role="{{ user.role }}">
+              <td><strong>{{ user.name }}</strong> <span class="role">{{ user.role }}</span><span class="sub">{{ user.email }}</span></td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.address }}</td>
+              <td>{{ user.timestamp.strftime('%d %b %Y') if user.timestamp else '' }}</td>
+            </tr>
+            {% endfor %}
+            
+
+            <tr class="no-rows" hidden><td colspan="4">No users match your search.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+{% include 'admin/_scripts.html' %}
+</body>
+</html>

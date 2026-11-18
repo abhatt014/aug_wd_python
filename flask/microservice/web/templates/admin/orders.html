@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Orders — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
+</head>
+<body class="admin">
+<div class="shell">
+  {% set nav = 'orders' %}
+  {% include 'admin/_sidebar.html' %}
+
+  <main class="main-area">
+    {% include '_flash.html' %}
+
+    <div class="page-head">
+      <div>
+        <h1>Orders</h1>
+        <p>Every order placed on the website, newest first.</p>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="toolbar">
+        <!-- admin.js filters the rows on this page by data-status; ?status=Pending pre-selects a tab -->
+        <div class="tabs" role="tablist" aria-label="Filter by status" data-tabs-for="#ordersTable" data-key="status"><button type="button" role="tab" data-filter="all" aria-selected="true">All</button><button type="button" role="tab" data-filter="Pending" aria-selected="false">Pending approval</button><button type="button" role="tab" data-filter="Accepted" aria-selected="false">Accepted</button><button type="button" role="tab" data-filter="Preparing" aria-selected="false">Preparing</button><button type="button" role="tab" data-filter="Out for delivery" aria-selected="false">Out for delivery</button><button type="button" role="tab" data-filter="Delivered" aria-selected="false">Delivered</button><button type="button" role="tab" data-filter="Rejected" aria-selected="false">Rejected</button></div>
+        <input type="search" placeholder="Search order, name or phone" aria-label="Search orders" data-search-for="#ordersTable">
+      </div>
+      <div class="table-wrap">
+        <table class="data" id="ordersTable">
+          <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th class="num">Total</th><th>Status</th><th class="actions">Actions</th></tr></thead>
+          <tbody>
+            {% for order in orders %}
+            <tr data-row data-status="{{ order.status|status_key }}">
+              <td><a class="link" href="{{ url_for('admin_order_detail', order_id=order.id) }}">#{{ order.order_number }}</a><span class="sub">{{ order.placed_at }}</span></td>
+              <td>{{ order.customer_name }}<span class="sub">{{ order.phone }}</span></td>
+              <td>{{ order.items_text }}</td>
+              <td class="num">{{ order.total_amount|rupee }}</td>
+              <td><span class="status" data-status="{{ order.status|status_key }}">{{ order.status }}</span>{% if order.reject_reason %}<span class="sub">{{ order.reject_reason }}</span>{% endif %}</td>
+              <td class="actions">
+                {% if order.status == 'Pending approval' %}
+                <form method="post" action="{{ url_for('admin_order_status', order_id=order.id) }}">
+                  <input type="hidden" name="status" value="Accepted">
+                  <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+                </form>
+                <button class="btn btn-danger btn-sm" type="button" data-reject="{{ order.order_number }}" data-action="{{ url_for('admin_order_status', order_id=order.id) }}">Reject</button>
+                {% else %}
+                <a class="link" href="{{ url_for('admin_order_detail', order_id=order.id) }}">View</a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+            <tr class="no-rows"{% if orders %} hidden{% endif %}><td colspan="6">No orders match. Try another status or search.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="toolbar" style="margin:1rem 0 0">
+        <span class="hint">Showing {{ orders|length }} of {{ total }} orders</span>
+        <div style="display:flex;gap:.5rem">
+          <a class="btn btn-secondary btn-sm"{% if page > 1 %} href="{{ url_for('admin_orders', page=page - 1) }}"{% else %} aria-disabled="true"{% endif %}>Newer</a>
+          <a class="btn btn-secondary btn-sm"{% if has_older %} href="{{ url_for('admin_orders', page=page + 1) }}"{% else %} aria-disabled="true"{% endif %}>Older</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+{% include 'admin/_reject_dialog.html' %}
+{% include 'admin/_scripts.html' %}
+</body>
+</html>

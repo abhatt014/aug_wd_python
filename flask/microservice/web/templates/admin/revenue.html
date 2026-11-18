@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Revenue report — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
+</head>
+<body class="admin">
+<div class="shell">
+  {% set nav = 'revenue' %}
+  {% include 'admin/_sidebar.html' %}
+
+  <main class="main-area">
+    {% include '_flash.html' %}
+
+    <div class="page-head">
+      <div>
+        <h1>Revenue report</h1>
+        <p>Cash collected from delivered orders, by the day the order was placed. Pending, in-progress and rejected orders are not counted.</p>
+      </div>
+    </div>
+
+    <section class="panel">
+      <!-- GET /admin/revenue?from=YYYY-MM-DD&to=YYYY-MM-DD   (the quick-range chips fill the dates and send the form) -->
+      <form class="filter-form" id="revenueFilter" action="{{ url_for('admin_revenue') }}" method="get">
+        <div class="field">
+          <label for="from">From</label>
+          <input type="date" id="from" name="from" value="{{ start.isoformat() }}" required>
+        </div>
+        <div class="field">
+          <label for="to">To</label>
+          <input type="date" id="to" name="to" value="{{ end.isoformat() }}" data-today="{{ today.isoformat() }}" required>
+        </div>
+        <button class="btn btn-tomato" type="submit">Show report</button>
+      </form>
+      <div class="presets" aria-label="Quick ranges">
+        <button class="chip" type="button" data-range="today">Today</button>
+        <button class="chip" type="button" data-range="7">Last 7 days</button>
+        <button class="chip" type="button" data-range="month">This month</button>
+        <button class="chip" type="button" data-range="30">Last 30 days</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Summary for <span id="rangeLabel">{{ start.strftime('%d %b %Y') }} to {{ end.strftime('%d %b %Y') }}</span></h2>
+      </div>
+      <div class="summary-line">
+        <div><b id="revTotal">{{ revenue|rupee }}</b><span>revenue</span></div>
+        <div><b id="revOrders">{{ orders|length }}</b><span>delivered orders</span></div>
+        <div><b id="revAvg">{{ average|rupee }}</b><span>average order</span></div>
+      </div>
+    </section>
+
+    <div class="detail-grid split">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>By day</h2>
+          <button class="btn btn-secondary btn-sm" type="button" data-csv="#dailyTable" data-filename="revenue-by-day">Download CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data" id="dailyTable">
+            <thead><tr><th>Date</th><th class="num">Orders</th><th class="num" data-csv="Revenue (INR)">Revenue</th></tr></thead>
+            <tbody>
+              {% for row in daily %}
+              <tr data-row><td data-csv="{{ row.day.isoformat() }}">{{ row.day.strftime('%d %b %Y') }}</td><td class="num">{{ row.orders }}</td><td class="num" data-csv="{{ row.revenue|int }}">{{ row.revenue|rupee }}</td></tr>
+              {% else %}
+              <tr class="no-rows"><td colspan="3">No delivered orders in this period.</td></tr>
+              {% endfor %}
+            </tbody>
+            <tfoot><tr><td>Total</td><td class="num">{{ orders|length }}</td><td class="num" data-csv="{{ revenue|int }}">{{ revenue|rupee }}</td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>By item</h2>
+          <button class="btn btn-secondary btn-sm" type="button" data-csv="#itemsTable" data-filename="revenue-by-item">Download CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data" id="itemsTable">
+            <thead><tr><th>Item</th><th class="num">Sold</th><th class="num" data-csv="Revenue (INR)">Revenue</th></tr></thead>
+            <tbody>
+              {% for row in items %}
+              <tr data-row><td>{{ row.name }}</td><td class="num">{{ row.qty }}</td><td class="num" data-csv="{{ row.revenue|int }}">{{ row.revenue|rupee }}</td></tr>
+              {% else %}
+              <tr class="no-rows"><td colspan="3">No items sold in this period.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Delivered orders</h2>
+        <button class="btn btn-secondary btn-sm" type="button" data-csv="#ordersReport" data-filename="delivered-orders">Download CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data" id="ordersReport">
+          <thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Items</th><th class="num" data-csv="Total (INR)">Total</th></tr></thead>
+          <tbody>
+            {% for order in orders %}
+            <tr data-row data-total="{{ order.total_amount|int }}">
+              <td><a class="link" href="{{ url_for('admin_order_detail', order_id=order.id) }}">#{{ order.order_number }}</a></td><td data-csv="{{ order.day.isoformat() }}">{{ order.placed.strftime('%d %b %Y, %I:%M %p') }}</td><td>{{ order.customer_name }}</td><td>{{ order.items_text }}</td><td class="num" data-csv="{{ order.total_amount|int }}">{{ order.total_amount|rupee }}</td>
+            </tr>
+            {% else %}
+            <tr class="no-rows"><td colspan="5">No delivered orders in this period.</td></tr>
+            {% endfor %}
+          </tbody>
+          <tfoot><tr><td colspan="4">Total</td><td class="num" id="ordersFootTotal">{{ revenue|rupee }}</td></tr></tfoot>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+{% include 'admin/_scripts.html' %}
+<script src="{{ url_for('static', filename='js/revenue.js') }}"></script>
+</body>
+</html>

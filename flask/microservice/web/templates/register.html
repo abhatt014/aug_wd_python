@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Create an account — Crust & Co.</title>
+{% include '_head.html' %}
+</head>
+<body>
+
+{% set page = 'register' %}
+{% include '_header.html' %}
+
+<section class="band">
+  <div class="narrow">
+    <h1>Create your account.</h1>
+    <p>You only do this once. Next time, your name, phone and address are filled in for you.</p>
+  </div>
+</section>
+
+<div class="narrow overlap">
+  <div class="card">
+    <h2>Your details</h2>
+    <p class="sub">All fields are needed so the rider can reach you.</p>
+
+    {% if error %}
+    <div class="form-alert error">{{ error }}</div>
+    {% endif %}
+
+    <!-- POST /processregistration  fields: name, email, phone, address, password, confirm_password, terms, next
+         app.py stores a password HASH, never the password. -->
+    <form action="{{ url_for('register') }}" method="post" data-validate novalidate>
+      <input type="hidden" name="next" value="{{ next or '' }}">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" autocomplete="name" required minlength="2" maxlength="80" value="{{ form.name or '' }}">
+        <div class="err">Enter your name.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required maxlength="100" value="{{ form.email or '' }}">
+          <div class="err">Enter a valid email, like name@example.com.</div>
+        </div>
+        <div class="field">
+          <label for="phone">Mobile number</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="98765 43210" required
+                 pattern="(\+91[ \-]?)?[6-9][0-9]{4}[ \-]?[0-9]{5}" value="{{ form.phone or '' }}">
+          <div class="err">Enter a 10-digit mobile number.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="address">Delivery address</label>
+        <textarea id="address" name="address" autocomplete="street-address" required minlength="10" maxlength="100" style="min-height:80px" placeholder="House number, street, area, city and PIN">{{ form.address or '' }}</textarea>
+        <div class="err">Enter your full address so we can deliver.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password" autocomplete="new-password" required minlength="6">
+            <button class="pw-toggle" type="button" aria-label="Show password">Show</button>
+          </div>
+          <div class="err">Use at least 6 characters.</div>
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input type="password" id="confirm" name="confirm_password" autocomplete="new-password" required data-match="#password">
+          <div class="err">The two passwords don't match.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" name="terms" value="1" required> I agree to pay cash when my order is delivered.</label>
+        <div class="err">Tick this box to create your account.</div>
+      </div>
+      <button class="btn btn-tomato btn-block" type="submit">Create account</button>
+    </form>
+
+    <p class="alt">Already registered? <a href="{{ url_for('login_form', next=next) }}">Log in</a></p>
+  </div>
+</div>
+
+{% include '_footer.html' %}
+</body>
+</html>

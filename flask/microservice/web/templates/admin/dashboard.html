@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Dashboard — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
+</head>
+<body class="admin">
+<div class="shell">
+  {% set nav = 'dashboard' %}
+  {% include 'admin/_sidebar.html' %}
+
+  <main class="main-area">
+    {% include '_flash.html' %}
+
+    <div class="page-head">
+      <div>
+        <h1>Today at the shop</h1>
+        <p>{{ today_label }}. New orders need your approval before the kitchen starts.</p>
+      </div>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_orders') }}">See all orders</a>
+    </div>
+
+    <div class="kpis">
+      <a class="kpi{% if pending %} attention{% endif %}" href="{{ url_for('admin_orders', status='Pending') }}"><div class="n">{{ pending|length }}</div><div class="l">waiting for approval</div></a>
+      <div class="kpi"><div class="n">{{ active|length }}</div><div class="l">being made or on the way</div></div>
+      <div class="kpi"><div class="n">{{ delivered_today }}</div><div class="l">delivered today</div></div>
+      <div class="kpi"><div class="n">{{ revenue_today|rupee }}</div><div class="l">cash collected today</div></div>
+    </div>
+
+    <section class="panel">
+      <h2>Waiting for your approval</h2>
+
+      {% if pending %}
+      <div class="queue">
+        {% for order in pending %}
+        <article class="qcard" data-status="Pending">
+          <header><h3>#{{ order.order_number }} {{ order.customer_name }}</h3><span class="when">{{ order.placed_at }}</span></header>
+          <ul>{% for item in order.line_items %}<li>{{ item.quantity }} × {{ item.item_name }}</li>{% endfor %}</ul>
+          <div class="addr">{{ order.address }}</div>
+          <div class="tot">{{ order.total_amount|rupee }} cash on delivery</div>
+          <div class="acts">
+            <form method="post" action="{{ url_for('admin_order_status', order_id=order.id) }}">
+              <input type="hidden" name="status" value="Accepted">
+              <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+            </form>
+            <button class="btn btn-danger btn-sm" type="button" data-reject="{{ order.order_number }}" data-action="{{ url_for('admin_order_status', order_id=order.id) }}">Reject</button>
+            <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_order_detail', order_id=order.id) }}">Details</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty-q">No new orders right now. New ones appear here when you refresh.</p>
+      {% endif %}
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>In progress</h2>
+        <span class="hint">Move each order to its next step</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data" id="activeTable">
+          <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th class="num">Total</th><th>Status</th><th class="actions">Next step</th></tr></thead>
+          <tbody>
+            {% for order in active %}
+            <tr data-row data-status="{{ order.status }}">
+              <td><a class="link" href="{{ url_for('admin_order_detail', order_id=order.id) }}">#{{ order.order_number }}</a><span class="sub">{{ order.placed_at }}</span></td>
+              <td>{{ order.customer_name }}<span class="sub">{{ order.phone }}</span></td>
+              <td>{{ order.items_text }}</td>
+              <td class="num">{{ order.total_amount|rupee }}</td>
+              <td><span class="status" data-status="{{ order.status }}">{{ order.status }}</span></td>
+              <td class="actions">
+                <form method="post" action="{{ url_for('admin_order_status', order_id=order.id) }}">
+                  <input type="hidden" name="status" value="{{ order.next_status }}">
+                  <button class="btn btn-secondary btn-sm" type="submit">{{ order.next_label }}</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr class="no-rows"><td colspan="6">Nothing in progress.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+{% include 'admin/_reject_dialog.html' %}
+{% include 'admin/_scripts.html' %}
+</body>
+</html>

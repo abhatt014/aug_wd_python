@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Menu — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
+</head>
+<body class="admin">
+<div class="shell">
+  {% set nav = 'menu' %}
+  {% include 'admin/_sidebar.html' %}
+
+  <main class="main-area">
+    {% include '_flash.html' %}
+
+    <div class="page-head">
+      <div>
+        <h1>Menu</h1>
+        <p>What customers can order. Switch an item off when it runs out; it stays on the menu marked sold out.</p>
+      </div>
+      <a class="btn btn-tomato" href="{{ url_for('admin_menu_new') }}">Add an item</a>
+    </div>
+    <section class="panel">
+      <div class="toolbar">
+        <div class="tabs" role="tablist" aria-label="Filter by category" data-tabs-for="#menuTable" data-key="category"><button type="button" role="tab" data-filter="all" aria-selected="true">Everything</button><button type="button" role="tab" data-filter="pizza" aria-selected="false">Pizzas</button><button type="button" role="tab" data-filter="sides" aria-selected="false">Sides & drinks</button></div>
+        <input type="search" placeholder="Search the menu" aria-label="Search the menu" data-search-for="#menuTable">
+      </div>
+      <div class="table-wrap">
+        <table class="data" id="menuTable">
+          <thead><tr><th>Item</th><th>Category</th><th class="num">Price</th><th>Available</th><th class="actions">Actions</th></tr></thead>
+          <tbody>
+            {% for item in menu_items %}
+            <tr data-row data-category="{{ item.category }}" data-name="{{ item.name }}">
+              <td><strong>{% if item.category == 'pizza' %}<span class="mark {{ item.type }}" title="{{ 'Non-vegetarian' if item.type == 'nonveg' else 'Vegetarian' }}"></span> {% endif %}{{ item.name }}</strong>{% if item.tag %} <span class="tag">{{ item.tag }}</span>{% endif %}<span class="sub">{{ item.description }}</span></td>
+              <td>{{ categories[item.category] }}</td>
+              <td class="num">{{ item.price|rupee }}</td>
+              <td>
+                <!-- The switch sends this form as soon as it changes: available=1 when on, missing when off -->
+                <form method="post" action="{{ url_for('admin_menu_availability', item_id=item.id) }}" style="display:flex;align-items:center;gap:.6rem">
+                  <label class="switch"><input type="checkbox" name="available" value="1"{% if item.available %} checked{% endif %} data-autosubmit aria-label="{{ item.name }} on the menu"><span></span></label>
+                  <span class="hint">{{ 'On menu' if item.available else 'Sold out' }}</span>
+                </form>
+              </td>
+              <td class="actions">
+                <a class="btn btn-secondary btn-sm" href="{{ url_for('admin_menu_edit', item_id=item.id) }}">Edit</a>
+                <form method="post" action="{{ url_for('admin_menu_delete', item_id=item.id) }}" data-confirm="Delete {{ item.name }} from the menu?">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+            <tr class="no-rows"{% if menu_items %} hidden{% endif %}><td colspan="5">No items match.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<dialog class="modal" id="confirmDialog" aria-labelledby="confirmText">
+  <form method="dialog">
+    <h2 id="confirmText" data-confirm-text>Are you sure?</h2>
+    <p>This can't be undone.</p>
+    <div class="acts">
+      <button class="btn btn-secondary btn-sm" type="button" data-close-dialog>Cancel</button>
+      <button class="btn btn-tomato btn-sm" type="button" data-confirm-yes>Delete</button>
+    </div>
+  </form>
+</dialog>
+
+{% include 'admin/_scripts.html' %}
+</body>
+</html>

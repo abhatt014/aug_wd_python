@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Order #{{ order.order_number }} — Crust & Co. admin</title>
+{% set admin = true %}
+{% include '_head.html' %}
+</head>
+<body class="admin">
+<div class="shell">
+  {% set nav = 'orders' %}
+  {% include 'admin/_sidebar.html' %}
+
+  <main class="main-area">
+    {% include '_flash.html' %}
+
+    {% set key = order.status|status_key %}
+    {% set status_url = url_for('admin_order_status', order_id=order.id) %}
+    <div>
+      <a class="back" href="{{ url_for('admin_orders') }}">← All orders</a>
+      <div class="page-head">
+        <div>
+          <h1>Order #{{ order.order_number }}</h1>
+          <p>Placed {{ order.placed_at }} by {{ order.customer_name }}</p>
+        </div>
+        <span class="status" data-status="{{ key }}">{{ order.status }}</span>
+      </div>
+
+      {% if order.step >= 0 %}
+      <div class="panel" style="padding-bottom:.5rem">
+        <ol class="tracker" aria-label="Order progress" style="margin:0 0 .75rem">
+          {% for step in steps %}
+          <li class="{% if loop.index0 < order.step %}done{% elif loop.index0 == order.step %}now{% endif %}">{{ step }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+
+      <div class="detail-grid">
+        <div>
+          <section class="panel">
+            <h2>Items</h2>
+            <div class="table-wrap">
+              <table class="data">
+                <thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Price</th><th class="num">Amount</th></tr></thead>
+                <tbody>
+                  {% for item in order.line_items %}
+                  <tr><td>{{ item.item_name }}</td><td class="num">{{ item.quantity }}</td><td class="num">{{ item.unit_price|rupee }}</td><td class="num">{{ item.item_total|rupee }}</td></tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <tr><td colspan="3">Delivery</td><td class="num">Free</td></tr>
+                  <tr><td colspan="3">Total to collect in cash</td><td class="num">{{ order.total_amount|rupee }}</td></tr>
+                </tfoot>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Customer and delivery</h2>
+            <dl class="facts">
+              <dt>Name</dt><dd>{{ order.customer_name }}</dd>
+              <dt>Phone</dt><dd><a class="link" href="tel:{{ order.phone }}">{{ order.phone }}</a></dd>
+              <dt>Address</dt><dd>{{ order.address }}</dd>
+              {% if order.landmark %}<dt>Landmark</dt><dd>{{ order.landmark }}</dd>{% endif %}
+              {% if order.notes %}<dt>Notes</dt><dd>{{ order.notes }}</dd>{% endif %}
+              <dt>Payment</dt><dd>{{ order.payment_method }}</dd>
+            </dl>
+          </section>
+        </div>
+
+        <div>
+          <section class="panel next-step">
+            <h2>Next step</h2>
+
+            {% if key == 'Pending' %}
+            <p>Check the address and items, then accept so the kitchen can start.</p>
+            <div class="acts">
+              <form method="post" action="{{ status_url }}">
+                <input type="hidden" name="status" value="Accepted">
+                <button class="btn btn-primary" type="submit">Accept order</button>
+              </form>
+              <button class="btn btn-danger" type="button" data-reject="{{ order.order_number }}" data-action="{{ status_url }}">Reject</button>
+            </div>
+            {% elif order.next_status %}
+            <p>
+              {% if key == 'Accepted' %}Accepted. Start it when the dough goes on the peel.
+              {% elif key == 'Preparing' %}In the oven. Send it out once it's boxed.
+              {% else %}On the way. The rider collects <strong>{{ order.total_amount|rupee }}</strong> in cash.{% endif %}
+            </p>
+            <form method="post" action="{{ status_url }}">
+              <input type="hidden" name="status" value="{{ order.next_status }}">
+              <button class="btn btn-primary" type="submit">{{ order.next_label }}</button>
+            </form>
+            {% elif key == 'Delivered' %}
+            <p>Delivered and {{ order.total_amount|rupee }} collected. Nothing more to do.</p>
+            {% elif key == 'Rejected' %}
+            <p class="reason">Reason given to the customer: {{ order.reject_reason or 'none recorded' }}</p>
+            {% else %}
+            <p>This order is {{ order.status|lower }}. Nothing more to do.</p>
+            {% endif %}
+          </section>
+
+          <section class="panel">
+            <h2>History</h2>
+            <ol class="timeline">
+              {% for h in history %}
+              <li>{{ h.status }}{% if h.note %}: {{ h.note }}{% endif %}<time>{{ h.when }}{% if h.changed_by_name %} by {{ h.changed_by_name }}{% endif %}</time></li>
+              {% else %}
+              <li>Placed by the customer<time>{{ order.placed_at }}</time></li>
+              {% endfor %}
+            </ol>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+{% include 'admin/_reject_dialog.html' %}
+{% include 'admin/_scripts.html' %}
+</body>
+</html>
