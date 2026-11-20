@@ -63,7 +63,7 @@ def friendly_time(dt):
 
 def get_db_connection():
     return mysql.connector.connect(
-        host=os.environ.get('DB_HOST', '192.168.81.184'),
+        host=os.environ.get('DB_HOST', '192.168.81.134'),
         user=os.environ.get('DB_USER', 'dbuser'),
         password=os.environ.get('DB_PASSWORD', 'redhat'),
         database=os.environ.get('DB_NAME', 'pizza')
