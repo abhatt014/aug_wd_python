@@ -11,7 +11,7 @@ from flask import (Flask, abort, flash, redirect, render_template, request,
                    session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
-# DB status values, in order, and the labels shown under the tracker
+# mysql DB status values, in order, and the labels shown under the tracker
 ORDER_STEPS = ['Pending approval', 'Accepted', 'Preparing', 'Out for delivery', 'Delivered']
 STEP_LABELS = ['Waiting for approval', 'Accepted', 'Preparing', 'Out for delivery', 'Delivered']
 
